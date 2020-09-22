@@ -75,7 +75,8 @@ h1 {
 
 .vote {
 	margin-top: 40px;
-	min-width: 600px;
+	max-width: 600px;
+	width: 100%;
 	flex-direction: column;
 	display: flex;
 	align-items: center;
@@ -107,6 +108,10 @@ h1 {
 	grid-template-columns: 1fr 1fr;
 	gap: 40px;
 
+	@media only screen and (max-width: 900px) {
+		grid-template-columns: 1fr;
+	}
+
 	> div {
 		display: grid;
 		justify-items: center;
@@ -123,13 +128,15 @@ h1 {
 }
 
 .board {
-	width: 300px;
-	height: 300px;
+	max-width: 300px;
+	max-height: 300px;
+	width: 100%;
+	height: 100%;
 	padding: 0;
 
 	img {
-		width: 300px;
-		height: 300px;
+		width: 100%;
+		height: 100%;
 	}
 }
 

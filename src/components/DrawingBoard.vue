@@ -174,9 +174,11 @@ export default {
 
 .board {
 	cursor: var(--board-cursor) 5 5, crosshair;
-	height: 600px;
+	height: 90vw;
+	max-height: 600px;
+	max-width: 600px;
 	padding: 0;
-	width: 600px;
+	width: 90vw;
 }
 
 .tools {
@@ -184,6 +186,10 @@ export default {
 	grid-template-columns: 1fr 1fr 1fr;
 	margin-top: 30px;
 	padding: 20px;
+
+	@media only screen and (max-width: 900px) {
+		padding: 14px;
+	}
 
 	@media only screen and (max-height: 1080px) {
 		margin-top: 20px;
@@ -201,6 +207,15 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	@media only screen and (max-width: 650px) {
+		width: 35px;
+		height: 35px;
+
+		svg {
+			height: 14px;
+		}
+	}
 
 	svg {
 		width: 18px;
@@ -229,6 +244,10 @@ export default {
 	grid-template-columns: repeat(11, 1fr);
 	gap: 8px 6px;
 	margin-bottom: 10px;
+
+	@media only screen and (max-width: 500px) {
+		grid-template-columns: repeat(8, 1fr);
+	}
 
 	.btn {
 		border: none;

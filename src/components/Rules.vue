@@ -37,7 +37,7 @@
 			<div class="rule">
 				<span>#7</span>
 				Once you've revealed all yours cards pick your favourite drawing or description to award a point to its creator!<br><br>
-				In the rare event your original word and final description are exactly the same, you'll get an extra point!
+				In the rare event your original phrase and final description are exactly the same, you'll get an extra point!
 			</div>
 		
 			<div class="rule">
@@ -61,19 +61,26 @@
 h1 {
 	text-align: left;
 	padding-bottom: 40px;
+
+	@media only screen and (max-height: 1080px) {
+		padding-bottom: 30px;
+	}
 }
 
 .grid {
 	display: grid;
 	grid-template-columns: 1fr;
-	gap: 50px 50px;
+	gap: 50px;
 	line-height: 1.5;
 	font-size: 1.5rem;
 	max-width: 500px;
+
+	@media only screen and (max-height: 1080px) {
+		gap: 35px;
+	}
 }
 
 .rule {
-
 	span {
 		font-size: 2.4rem;
 		display: block;
@@ -82,6 +89,5 @@ h1 {
 		padding-bottom: 10px;
 	}
 }
-
 
 </style>

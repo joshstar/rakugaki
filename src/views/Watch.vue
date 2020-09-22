@@ -1,6 +1,5 @@
 <template>
 	<div class="watch">
-		<scoreboard />
 		<div class="waiting" v-if="waiting">
 			<h1>(◕︿◕✿)</h1>
 			<div>
@@ -49,6 +48,7 @@
 				Watching <img class="avatar" :src="presenter.avatar"> {{ presenter.name }} present their cards
 			</h1>
 		</template>
+		<scoreboard />
 	</div>
 </template>
 
@@ -136,6 +136,7 @@ export default {
 h1 {
 	font-size: 2.2rem;
 	margin-top: 50px;
+	max-width: 80vw;
 
 	@media only screen and (max-height: 1080px) {
 		margin-top: 40px;
@@ -163,6 +164,10 @@ h1 {
 	flex-direction: column;
 	display: flex;
 	align-items: center;
+
+	@media only screen and (max-width: 650px) {
+		min-width: 100vw;
+	}
 
 	@media only screen and (max-height: 1080px) {
 		margin-top: 40px;
@@ -202,9 +207,11 @@ h1 {
 }
 
 .board {
-	width: 600px;
-	height: 600px;
+	height: 90vw;
+	max-height: 600px;
+	max-width: 600px;
 	padding: 0;
+	width: 90vw;
 }
 
 .card {

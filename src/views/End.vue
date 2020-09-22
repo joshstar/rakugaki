@@ -52,17 +52,22 @@ export default {
 
 <style lang="scss" scoped>
 
-h1 {
-	font-size: 2rem;
-	margin-top: 0;
-}
-
 .end {
 	margin-top: 40px;
-	min-width: 600px;
+	max-width: 800px;
+	width: 100%;
 	flex-direction: column;
 	display: flex;
 	align-items: center;
+}
+
+h1 {
+	font-size: 2rem;
+	margin-top: 0;
+
+	@media only screen and (max-width: 900px) {
+		margin-top: 80px;
+	}
 }
 
 .results {
@@ -70,6 +75,11 @@ h1 {
 	grid-template-columns: 200px 200px;
 	gap: 10px 20px;
 	justify-items: center;
+
+	@media only screen and (max-width: 700px) {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
 
 	.player {
 		font-size: 1.8rem;
@@ -88,12 +98,14 @@ h1 {
 			}
 		}
 
-		&:nth-child(odd) {
-			margin-bottom: 30px;
-		}
+		@media only screen and (min-width: 700px) {
+			&:nth-child(odd) {
+				margin-bottom: 30px;
+			}
 
-		&:nth-child(even) {
-			margin-top: 40px;
+			&:nth-child(even) {
+				margin-top: 40px;
+			}
 		}
 	}
 }
@@ -114,6 +126,14 @@ h1 {
 	grid-template-columns: 1fr 1fr 1fr;
 	margin-top: 80px;
 
+	@media only screen and (max-width: 1000px) {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	@media only screen and (max-width: 700px) {
+		grid-template-columns: 1fr;
+	}
+
 	> div {
 		display: grid;
 		justify-items: center;
@@ -121,13 +141,13 @@ h1 {
 }
 
 .board {
-	width: 250px;
-	height: 250px;
+	max-width: 250px;
+	max-height: 250px;
 	padding: 0;
 
 	img {
-		width: 250px;
-		height: 250px;
+		width: 100%;
+		height: 100%;
 	}
 }
 </style>

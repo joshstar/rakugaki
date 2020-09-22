@@ -5,7 +5,7 @@
 		<div class="board box">
 			<img :src="drawing">
 		</div>
-		<div>
+		<div class="input-wrap">
 			<input class="box input" type="text" v-model="text" placeholder="Your words here." ref="input" >
 		</div>
 		<div class="btn bold done" @click="submit">
@@ -52,9 +52,16 @@ export default {
 }
 
 .board {
-	width: 600px;
-	height: 600px;
+	height: 90vw;
+	max-height: 600px;
+	max-width: 600px;
 	padding: 0;
+	width: 90vw;
+}
+
+.input-wrap {
+	width: 100%;
+	text-align: center;
 }
 
 .input {
@@ -64,7 +71,8 @@ export default {
 	margin-top: 30px;
 	outline: none;
 	padding: 22px;
-	width: 500px;
+	max-width: 500px;
+	width: 100%;
 
 	@media only screen and (max-height: 1080px) {
 		margin-top: 20px;

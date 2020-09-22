@@ -71,10 +71,15 @@ body {
 	max-width: 1000px;
 	min-height: 100vh;
 	padding-bottom: 400px;
+
+	@media only screen and (max-width: 650px) {
+		width: calc(100vw - 30px);
+		padding-bottom: 200px;
+	}
 }
 
 .logo {
-	width: 300px;
+	max-width: 300px;
 	margin-top: 40px;
 	margin-bottom: 60px;
 
@@ -89,10 +94,18 @@ body {
 		margin-top: 40px;
 		position: absolute;
 		width: 100px;
+
+		@media only screen and (max-width: 900px) {
+			display: none;
+		}
 	}
 
 	&.link {
 		cursor: pointer;
+
+		@media only screen and (max-width: 900px) {
+			display: block;
+		}
 	}
 }
 
@@ -131,7 +144,7 @@ img {
 	display: flex;
 	justify-content: center;
 	text-align: center;
-	transition: transform 0.2s, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border 0.2s ease;
+	transition: transform 0.2s, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-width 0.2s ease;
 	user-select: none;
 
 	&.selected {

@@ -1,6 +1,5 @@
 <template>
 	<div class="play">
-		<scoreboard />
 		<div class="waiting" v-if="waiting">
 			<h1>（；￣д￣）</h1>
 			<div>
@@ -16,6 +15,7 @@
 			<drawing-board v-else-if="turn.type === 'draw'" :description="turn.data" @done="saveDrawing" />
 			<description v-else-if="turn.type === 'describe'" :drawing="turn.data" @done="saveDescription" />
 		</div>
+		<scoreboard />
 	</div>
 </template>
 

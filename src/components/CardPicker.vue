@@ -39,6 +39,10 @@ export default {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 60px;
+
+	@media only screen and (max-width: 900px) {
+		gap: 40px;
+	}
 }
 
 .card {

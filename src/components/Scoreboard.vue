@@ -52,6 +52,11 @@ export default {
 	gap: 26px;
 	max-width: 250px;
 	overflow: hidden;
+
+	@media only screen and (max-width: 900px) {
+		position: static;
+		margin-top: 100px;
+	}
 }
 
 .player {

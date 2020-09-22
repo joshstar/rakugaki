@@ -143,8 +143,13 @@ export default {
 <style lang="scss" scoped>
 
 .lobby {
-	width: 600px;
+	max-width: 600px;
+	width: 100%;
 	font-weight: 600;
+
+	@media only screen and (max-width: 650px) {
+		padding: 50px 40px;
+	}
 }
 
 .start-btn {
@@ -180,14 +185,20 @@ export default {
 
 .options {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 24px;
 	margin-bottom: 40px;
+
+	@media only screen and (max-width: 500px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
 .option {
-	padding: 16px;
+	align-items: center;
 	font-size: 1.4rem;
+	padding: 16px;
+	transition: transform 0.2s, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .option.colors {
@@ -198,6 +209,8 @@ export default {
 
 .invite-wrap {
 	margin-top: 100px;
+	text-align: center;
+	width: 100%;
 
 	h1 {
 		padding-bottom: 20px;
@@ -209,9 +222,10 @@ export default {
 	border: none;
 	color: var(--text-light);
 	font-weight: 500;
+	max-width: 500px;
 	outline: none;
 	padding: 22px;
-	width: 500px;
+	width: 100%;
 }
 
 @keyframes rainbow {
