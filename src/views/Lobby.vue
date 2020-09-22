@@ -202,7 +202,7 @@ export default {
 }
 
 .option.colors {
-	animation: rainbow 22s infinite;
+	background-image: linear-gradient(319deg, #663dff 0%, #aa00ff 37%, #cc4499 100%);
 	border: none;
 	color: #fff;
 }
@@ -227,19 +227,4 @@ export default {
 	padding: 22px;
 	width: 100%;
 }
-
-@keyframes rainbow {
-	0%{background: orange;}
-	10%{background: purple;}	
-	20%{background: red;}
-	30%{background: CadetBlue;}
-	40%{background: yellow;}
-	50%{background: coral;}
-	60%{background: green;}
-	70%{background: cyan;}
-	80%{background: DeepPink;}
-	90%{background: DodgerBlue;}
-	100%{background: orange;}
-}
-
 </style>
