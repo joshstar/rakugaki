@@ -1,13 +1,20 @@
 <template>
 	<img class="logo" src="@/assets/logo.svg" :class="{small: smallLogo, link: linkLogo}" @click="goHome" />
 	<router-view/>
+	<div class="connection-status" v-if="connecting">
+		Connecting...
+	</div>
 </template>
 
 <script>
 import router from "@/routes"
+import { state } from "@/game/state"
 
 export default {
 	computed: {
+		connecting() {
+			return !state.isConnected && state.self
+		},
 		smallLogo() {
 			const { name } = this.$route
 			return !(name === "Home" || name === "Lobby")
@@ -107,6 +114,19 @@ body {
 			display: block;
 		}
 	}
+}
+
+.connection-status {
+	background: #ff5722;
+	border-radius: 8px;
+	color: #fff;
+	font-weight: 700;
+	padding: 14px 18px;
+	position: absolute;
+	right: 10px;
+	text-align: center;
+	top: 12px;
+	z-index: 90;
 }
 
 h1 {

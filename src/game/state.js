@@ -4,6 +4,7 @@ import router from "@/routes"
 import * as event from "./event"
 
 export const state = reactive({
+	isConnected: false,
 	stage: "play",
 	round: 1,
 	turn: 0,
@@ -112,6 +113,7 @@ export function makePlayOrder(players) {
 }
 
 export function resetState() {
+	state.isConnected = false
 	state.stage = "play"
 	state.round = 1
 	state.turn = 0

@@ -3,7 +3,7 @@
 	<template v-else>
 		<div class="lobby box">
 			<div class="players">
-				<div class="player" v-for="player in players" :key="player.id">
+				<div class="player" v-for="player in lobbyPlayers" :key="player.id">
 					<img class="avatar" :src="player.avatar" >
 					{{ player.name }}
 				</div>
@@ -46,6 +46,7 @@ import router from "@/routes"
 import * as lobby from "@/game/lobby"
 import CreatePlayer from "../components/CreatePlayer"
 import Rules from "@/components/Rules"
+import { state } from "@/game/state"
 
 export default {
 	props: ["room"],
@@ -55,6 +56,7 @@ export default {
 	},
 	data() {
 		return {
+			roomCode: null,
 			inviteUrl: null,
 			isHost: false,
 			self: {},
@@ -67,6 +69,11 @@ export default {
 			}
 		}
 	},
+	computed: {
+		lobbyPlayers() {
+			return this.players[0] ? this.players : [this.self]
+		}
+	},
 	methods: {
 		onJoin() {
 			lobby.players((players) => {
@@ -74,6 +81,10 @@ export default {
 			})
 		},
 		startGame() {
+			if (!state.isConnected) {
+				return alert("Connot start game while connecting, please wait...")
+			}
+
 			if (process.env.NODE_ENV === "production") {
 				if (this.players.length < 2) {
 					return alert("Need more players!")
@@ -90,7 +101,7 @@ export default {
 		},
 		setSelf(self) {
 			this.self = self
-			lobby.join(this.self, this.room, this.onJoin)
+			lobby.join(this.self, this.roomCode, this.onJoin)
 		},
 		copyUrl() {
 			this.$refs.invite.select()
@@ -123,8 +134,9 @@ export default {
 	},
 	created() {
 		this.isHost = !!this.$route.query.host
+		this.roomCode = this.room
 		this.inviteUrl = `${window.location.origin}${this.$route.path}`
-		router.replace("/lobby") // Hide lobby code from url
+		router.replace("/lobby") // Hide room code from url
 
 		if (this.isHost) {
 			if (process.env.NODE_ENV === "production") {

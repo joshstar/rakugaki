@@ -1,5 +1,6 @@
 import { orderBy } from "lodash"
 import Pusher from 'pusher-js'
+import { state } from "./state"
 
 let pusher = null,
 	channel = null
@@ -19,6 +20,7 @@ export function connect(user, channelName, onReady) {
 	})
 	channel = pusher.subscribe(`presence-${channelName}`)
 	channel.bind("pusher:subscription_succeeded", onReady)
+	onConnectionChange()
 }
 
 export function startGame(options) {
@@ -62,4 +64,15 @@ export function onPlayerJoin(func) {
 
 export function onPlayerLeave(func) {
 	channel.bind('pusher:member_removed', func)
+}function isConnected() {
+	return pusher.connection.state === "connected"
 }
+
+function onConnectionChange() {
+	const onConnectionChange = () => state.isConnected = isConnected()
+	pusher.connection.bind("connected", onConnectionChange)
+	pusher.connection.bind("connecting", onConnectionChange)
+	pusher.connection.bind("unavailable", onConnectionChange)
+	pusher.connection.bind("failed", onConnectionChange)
+}
+
