@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { orderBy } from "lodash"
 import Pusher from 'pusher-js'
 
 let pusher = null,
@@ -53,7 +53,7 @@ export function getPlayers() {
 		avatar: info.avatar,
 		host: info.host
 	}))
-	return _.orderBy(players, ["host", "id"], ["desc", "asc"])
+	return orderBy(players, ["host", "id"], ["desc", "asc"])
 }
 
 export function onPlayerJoin(func) {

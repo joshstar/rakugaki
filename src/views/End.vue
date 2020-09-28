@@ -29,16 +29,16 @@
 </template>
 
 <script>
-import _ from "lodash"
+import { orderBy, flatten } from "lodash"
 import { state, getPlayer } from "@/game/state"
 
 export default {
 	computed: {
 		players() {
-			return _.orderBy(state.players, ["points"], ["desc"])
+			return orderBy(state.players, ["points"], ["desc"])
 		},
 		cards() {
-			return _.flatten(state.roundHistory)
+			return flatten(state.roundHistory)
 				.filter(card => card.type === "draw")
 		},
 	},

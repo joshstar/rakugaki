@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { last } from "lodash"
 import { state, getPlayer, pushWatchPage, plusPoints, nextRound } from "./state"
 
 export function allPlayersFinished() {
@@ -55,7 +55,7 @@ export function vote(playerId) {
 
 function checkForExactMatch() {
 	const self = getPlayer(state.self)
-	const lastCard = _.last(self.history)
+	const lastCard = last(self.history)
 	if (lastCard.type !== "describe") return
 	if (self.history[0].data.toLowerCase() === lastCard.data.toLowerCase()) {
 		plusPoints({ playerId: state.self }, true)

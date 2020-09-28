@@ -12,7 +12,7 @@ const routes = [
 		component: Home
 	},
 	{
-		path: '/lobby/:room',
+		path: '/lobby/:room?',
 		name: "Lobby",
 		component: Lobby,
 		props: true

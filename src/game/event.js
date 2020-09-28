@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { sortBy, uniqBy } from "lodash"
 import { nanoid } from "nanoid"
 import { addHistory, setWatchPage, plusPoints, nextRound } from "./state" 
 import * as pusher from "./pusher"

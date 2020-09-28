@@ -1,4 +1,4 @@
-import _ from "lodash"
+import { shuffle, isEqual } from "lodash"
 import { reactive } from 'vue'
 import router from "@/routes"
 import * as event from "./event"
@@ -108,7 +108,7 @@ export function getPlayer(id) {
 
 export function makePlayOrder(players) {
 	const playerIds = players.map(({ id }) => id)
-	return _.shuffle(playerIds)
+	return shuffle(playerIds)
 }
 
 export function resetState() {
