@@ -32,9 +32,9 @@
 			</div>
 		</div>
 
-		<div class="invite-wrap" @click="copyUrl">
+		<div class="invite-wrap" @click="copyUrl" v-if="inviteUrl">
 			<h1>Invite your friends!</h1>
-			<input class="box invite" :value="url" readonly ref="invite">
+			<input class="box invite" :value="inviteUrl" readonly ref="invite">
 		</div>
 
 		<rules />
@@ -55,6 +55,7 @@ export default {
 	},
 	data() {
 		return {
+			inviteUrl: null,
 			isHost: false,
 			self: {},
 			players: [],
@@ -64,11 +65,6 @@ export default {
 				rounds: 1,
 				colors: false
 			}
-		}
-	},
-	computed: {
-		url() {
-			return window.location.href
 		}
 	},
 	methods: {
@@ -127,8 +123,10 @@ export default {
 	},
 	created() {
 		this.isHost = !!this.$route.query.host
+		this.inviteUrl = `${window.location.origin}${this.$route.path}`
+		router.replace("/lobby") // Hide lobby code from url
+
 		if (this.isHost) {
-			router.replace(this.$route.path)
 			if (process.env.NODE_ENV === "production") {
 				window.addEventListener("beforeunload", (e) => {
 					e.preventDefault()
