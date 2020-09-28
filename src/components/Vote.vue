@@ -75,7 +75,7 @@ h1 {
 
 .vote {
 	margin-top: 40px;
-	max-width: 600px;
+	max-width: 640px;
 	width: 100%;
 	flex-direction: column;
 	display: flex;
@@ -151,6 +151,7 @@ h1 {
 	padding: 10px;
 	text-align: center;
 	width: 300px;
+	word-break: break-word;
 }
 
 </style>

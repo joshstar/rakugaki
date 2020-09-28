@@ -235,6 +235,7 @@ h1 {
 	height: auto;
 	min-height: 270px;
 	width: 200px;
+	word-break: break-word;
 }
 
 </style>
