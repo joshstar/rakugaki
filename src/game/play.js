@@ -8,8 +8,11 @@ export function startGame() {
 }
 
 export async function getCards() {
-	const response = await fetch("/api/cards")
-	return response.json()
+	const decks = state.options.decks.join()
+	const amount = state.options.cardAmount
+	const response = await fetch(`/api/cards?decks=${decks}&amount=${amount}`)
+	const { cards } = await response.json()
+	return cards
 }
 
 export function pickCard(card) {

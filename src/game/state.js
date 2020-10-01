@@ -17,7 +17,9 @@ export const state = reactive({
 		rounds: 1,
 		playOrder: [],
 		timeLimit: null,
-		colors: false
+		colors: false,
+		decks: ["standard"],
+		cardAmount: 4,
 	},
 })
 
@@ -125,7 +127,9 @@ export function resetState() {
 	state.options = {
 		rounds: 1,
 		playOrder: [],
-		timeLimit: null
+		timeLimit: null,
+		decks: ["standard"],
+		cardAmount: 4,
 	}
 }
 

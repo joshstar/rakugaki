@@ -4,7 +4,7 @@
 		<div class="grid">
 			<div class="rule">
 				<span>#1</span>
-				You'll be given the choice of four phrase cards, pick one to draw!
+				You'll be given the choice of multiple phrase cards, pick one to draw!
 			</div>
 
 			<div class="rule">

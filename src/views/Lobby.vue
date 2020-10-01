@@ -19,6 +19,19 @@
 				<div class="btn option" @click="toggleColors" :class="{colors: options.colors}">
 					{{ options.colors ? "Colors" : "Just Black"}}
 				</div>
+				<div class="btn option" @click="upCardAmount">
+					{{ options.cardAmount }} Phrase Card{{ options.cardAmount > 1 ? "s" : ""}}
+				</div>
+				<div class="dropdown-wrap">
+					<div class="btn option dropdown-toggle" @click="toggleDeckDropdown">
+						{{ options.decks.length }} Deck{{ options.decks.length !== 1 ? "s" : ""}}
+					</div>
+					<div class="btn dropdown" v-if="editingDecks">
+						<div class="item" v-for="deck in decks" :key="deck" @click="toggleDeck(deck)" :class="{active: isDeckActive(deck)}">
+							{{ deck }}
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="btn wait-btn" v-if="starting">
@@ -62,10 +75,14 @@ export default {
 			self: {},
 			players: [],
 			starting: false,
+			editingDecks: false,
+			decks: ["Standard", "NSFW", "Weeb", "Simple"],
 			options: {
 				timeLimit: 0,
 				rounds: 1,
-				colors: false
+				colors: false,
+				cardAmount: 4,
+				decks: ["standard"],
 			}
 		}
 	},
@@ -83,6 +100,10 @@ export default {
 		startGame() {
 			if (!state.isConnected) {
 				return alert("Connot start game while connecting, please wait...")
+			}
+
+			if (!this.options.decks.length) {
+				return alert("Must select at least 1 deck")
 			}
 
 			if (process.env.NODE_ENV === "production") {
@@ -119,8 +140,30 @@ export default {
 				this.options.timeLimit = 0
 			}
 		},
+		upCardAmount() {
+			this.options.cardAmount = this.options.cardAmount + 1
+			if (this.options.cardAmount > 6) {
+				this.options.cardAmount = 1
+			}
+		},
 		toggleColors() {
 			this.options.colors = !this.options.colors
+		},
+		toggleDeckDropdown() {
+			this.editingDecks = !this.editingDecks
+		},
+		toggleDeck(deck) {
+			if (this.isDeckActive(deck)) {
+				return this.options.decks = this.options.decks.filter(d => d !== deck.toLowerCase())
+			}
+			this.options.decks.push(deck.toLowerCase())
+		},
+		isDeckActive(deck) {
+			return this.options.decks.includes(deck.toLowerCase())
+		},
+		onBodyClick(event) {
+			if (event.target.className.includes("dropdown-toggle") || event.target.className.includes("item")) return
+			if (this.editingDecks) this.toggleDeckDropdown()
 		}
 	},
 	beforeRouteLeave(to, from, next) {
@@ -145,7 +188,13 @@ export default {
 					e.returnValue = ""
 				})
 			}
+			document.body.addEventListener("click", this.onBodyClick)
 		}
+	},
+	beforeUnmount() {
+		try {
+			document.body.removeEventListener("click", this.onBodyClick)
+		} catch (e) {e}
 	}
 }
 </script>
@@ -215,6 +264,40 @@ export default {
 	background-image: linear-gradient(319deg, #663dff 0%, #aa00ff 37%, #cc4499 100%);
 	border: none;
 	color: #fff;
+}
+
+.dropdown-wrap {
+	position: relative;
+}
+
+.dropdown {
+	background: var(--foreground);
+	display: flex;
+	padding: 11px 10px;
+	flex-direction: column;
+	margin-top: 8px;
+	position: absolute;
+	width: 100%;
+	z-index: 20;
+	
+	.item {
+		background: var(--foreground);
+		border-radius: 4px;
+		font-size: 1.2rem;
+		font-weight: 500;
+		padding: 9px;
+		text-align: left;
+		transition: background-color 0.2s ease, color 0.2s ease;
+
+		&:hover {
+			background: var(--background);
+		}
+	}
+
+	.active {
+		color: var(--accent);
+		font-weight: 600;
+	}
 }
 
 .invite-wrap {
