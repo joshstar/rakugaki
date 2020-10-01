@@ -6,19 +6,22 @@
 
 		<div class="tools box">
 			<div>
+				<div class="btn" @click="setTool('draw')" :class="{selected: tool === 'draw'}">
+					<icon :data="icons.drawSvg" />
+				</div>
+				<div class="btn" @click="setTool('flood')" :class="{selected: tool === 'flood'}">
+					<icon :data="icons.fillSvg" />
+				</div>
+				<div class="btn" @click="setTool('erase')" :class="{selected: tool === 'erase'}">
+					<icon :data="icons.eraseSvg" />
+				</div>
+			</div>
+			<div>
 				<div class="btn" @click="undo">
 					<icon :data="icons.undoSvg" />
 				</div>
 				<div class="btn" @click="redo">
 					<icon :data="icons.redoSvg" />
-				</div>
-			</div>
-			<div>
-				<div class="btn" @click="setTool('draw')" :class="{selected: tool === 'draw'}">
-					<icon :data="icons.drawSvg" />
-				</div>
-				<div class="btn" @click="setTool('erase')" :class="{selected: tool === 'erase'}">
-					<icon :data="icons.eraseSvg" />
 				</div>
 			</div>
 			<div>
@@ -53,6 +56,7 @@
 <script>
 import { create } from "simple-drawing-board"
 import drawSvg from "@/assets/icons/draw.svg"
+import fillSvg from "@/assets/icons/fill.svg"
 import eraseSvg from "@/assets/icons/erase.svg"
 import redoSvg from "@/assets/icons/redo.svg"
 import undoSvg from "@/assets/icons/undo.svg"
@@ -98,6 +102,7 @@ export default {
 			],
 			icons: {
 				drawSvg,
+				fillSvg,
 				eraseSvg,
 				redoSvg,
 				undoSvg
@@ -112,22 +117,25 @@ export default {
 			const sizes = {
 				5: [10, 2.5],
 				10: [10, 5],
-				15: [15, 7.5]
+				15: [15, 7.5],
 			}
 			const [size, radius] = sizes[this.lineSize]
 			const hex = this.color === "#fff" || this.color === "#000" ? "#105ed2" : this.color
 			const color = hex.replace("#", "%23")
+
+			const drop = `<path d="M15 6 Q 15 6, 25 18 A 12.8 12.8 0 1 1 5 18 Q 15 6 15 6z" />`
+			const dropSvg = `<svg width="22" height="18" viewBox="0 0 50 40" fill="${color}" xmlns="http://www.w3.org/2000/svg">${drop}</svg>`
+
 			const circle = `<circle cx="${radius}" cy="${radius}" r="${radius}" fill="${color}"/>`
-			const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg">${circle}</svg>`
+			const circleSvg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg">${circle}</svg>`
 			return {
-				"--board-cursor": `url('data:image/svg+xml;utf8,${svg}')`
+				"--board-cursor": `url('data:image/svg+xml;utf8,${this.tool === "flood" ? dropSvg : circleSvg}')`
 			}
 		}
 	},
 	methods: {
 		setTool(tool) {
-			if (this.board.mode === tool) return
-			this.board.toggleMode()
+			this.board.setMode(tool)
 			this.tool = tool
 		},
 		setColor(hex) {
@@ -135,6 +143,9 @@ export default {
 			this.color = hex
 		},
 		setLineSize(size) {
+			if (this.tool === "flood") {
+				this.setTool("draw")
+			}
 			this.board.setLineSize(size)
 			this.lineSize = size
 		},
@@ -183,12 +194,21 @@ export default {
 
 .tools {
 	display: grid;
+	gap: 10px;
 	grid-template-columns: 1fr 1fr 1fr;
+	justify-items: center;
 	margin-top: 30px;
 	padding: 20px;
 
 	@media only screen and (max-width: 900px) {
 		padding: 14px;
+		gap: 5px;
+	}
+
+	@media only screen and (max-width: 450px) {
+		gap: 15px 0;
+		grid-template-columns: 1fr 1fr;
+		justify-items: flex-end;
 	}
 
 	@media only screen and (max-height: 1080px) {
