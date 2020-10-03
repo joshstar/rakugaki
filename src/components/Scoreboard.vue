@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { last } from "lodash"
 import { state } from "@/game/state"
 import drawSvg from "@/assets/icons/draw.svg"
 
@@ -34,9 +33,11 @@ export default {
 	},
 	methods: {
 		turn(player) {
-			const lastTurn = last(player.history)
-			if (!lastTurn) return 1
-			return lastTurn.turn + 1
+			let turn = 0
+			this.players.forEach(({ history }) => {
+				turn += history.filter(({ creator }) => creator === player.id ).length
+			})
+			return turn
 		}
 	}
 }
