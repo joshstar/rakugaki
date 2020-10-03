@@ -6,10 +6,11 @@ export function init() {
 	pusher.onGameEvent(onEvent)
 }
 
+const eventsReceived = {}
 function onEvent(eventData) {
-	const { event, data } = eventData
-	if (event === "chunked") {
-		return processChunkedEvent(eventData)
+	const { eventId, event, data } = eventData
+	if (eventsReceived[eventId]) {
+		return
 	}
 
 	switch (event) {
@@ -37,6 +38,7 @@ function onEvent(eventData) {
 			console.log("Unknown event received", eventData)
 			break;
 	}
+	eventsReceived[eventId] = true
 }
 
 export function send(event, data, options = {log: true}) {
