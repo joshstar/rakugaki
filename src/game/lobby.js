@@ -1,5 +1,5 @@
 import * as pusher from "./pusher"
-import { setPlayers, setOptions, makePlayOrder } from "./state"
+import { state, setPlayers, setOptions, makePlayOrder } from "./state"
 import { startGame as start } from "./play"
 
 let self
@@ -15,6 +15,8 @@ export function join(player, room, onJoin) {
 }
 
 export function startGame(options) {
+	if (state.joined) return
+	state.joined = true
 	const players = pusher.getPlayers()
 	if (self.host) {
 		options = {

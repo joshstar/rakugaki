@@ -21,7 +21,7 @@
 
 <script>
 import { watch } from "vue"
-import { state } from "@/game/state"
+import { state, startWaitingTimeout, cancelWaitingTimeout } from "@/game/state"
 import * as play from "@/game/play"
 import CardPicker from "@/components/CardPicker"
 import DrawingBoard from "@/components/DrawingBoard"
@@ -56,10 +56,12 @@ export default {
 	methods: {
 		nextTurn() {
 			try {
+				cancelWaitingTimeout()
 				this.turn = play.nextTurn()
 				this.waiting = false
 			} catch (err) {
 				this.waiting = true
+				startWaitingTimeout()
 			}
 		},
 		pickCard(card) {

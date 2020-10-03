@@ -6,7 +6,7 @@ const decks = {
 }
 
 const rand = (arr) => arr[arr.length * Math.random() | 0]
-const clamp = (number, min, max) => Math.max(min, Math.min(number, max));
+const clamp = (number, min, max) => Math.max(min, Math.min(number, max))
 
 module.exports = (req, res) => {
 	const amount = clamp(Number(req.query.amount) || 1, 1, 10)

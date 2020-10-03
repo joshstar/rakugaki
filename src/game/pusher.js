@@ -1,9 +1,12 @@
 import { orderBy } from "lodash"
 import Pusher from 'pusher-js'
+import { sleep } from "@/util"
 import { state } from "./state"
 
 let pusher = null,
-	channel = null
+	channel = null,
+	eventLog = [],
+	resentEventIndex = 0
 
 export function connect(user, channelName, onReady) {
 	pusher = new Pusher("", {
@@ -19,28 +22,84 @@ export function connect(user, channelName, onReady) {
 		}
 	})
 	channel = pusher.subscribe(`presence-${channelName}`)
-	channel.bind("pusher:subscription_succeeded", onReady)
+	channel.bind("pusher:subscription_succeeded", () => {
+		onReady()
+		retryFailedEvents()
+	})
 	onConnectionChange()
+	onResync()
+}
+
+function triggerEvent(trigger, data, log = true) {
+	const connected = isConnected()
+	if (log) {
+		eventLog.push({ trigger, data, isConnected: connected })
+	}
+	if (connected) {
+		channel.trigger(trigger, data)
+	}
+}
+
+async function triggerBulkEvents(events) {
+	let i = 0
+	for (const { trigger, data } of events) {
+		channel.trigger(trigger, data)
+
+		// Avoid rate limits
+		if (i + 1 % 6) {
+			await sleep(1000)
+		}
+		i++
+	}
+	return i
+}
+
+async function retryFailedEvents() {
+	if (!isConnected()) return
+	const eventsToRetry = eventLog.slice(resentEventIndex)
+	const eventsSent = await triggerBulkEvents(eventsToRetry)
+	resentEventIndex = resentEventIndex + eventsSent
 }
 
 export function startGame(options) {
-	channel.trigger("client-start-game", options)
+	triggerEvent("client-start-game", options)
 }
 
 export function onGameStart(func) {
 	channel.bind("client-start-game", func)
 }
 
+export function sendGameEvent(event, log = true) {
+	triggerEvent("client-game-event", event, log)
+}
+
 export function onGameEvent(func) {
 	channel.bind("client-game-event", func)
 }
 
-export function sendGameEvent(event) {
-	channel.trigger("client-game-event", event)
+export function sendResyncEvent() {
+	channel.trigger("client-resync", {})
+}
+
+function onResync() {
+	channel.bind("client-resync", () => {
+		triggerBulkEvents(eventLog)
+	})
+}
+
+export function hostResync() {
+	triggerBulkEvents(eventLog)
+}
+
+export function clearEventLog() {
+	eventLog = []
+	resentEventIndex = 0
 }
 
 export function disconnect() {
-	pusher.disconnect()
+	try {
+		pusher.disconnect()
+	} catch (e) {e}
 }
 
 export function playerCount() {
@@ -64,7 +123,9 @@ export function onPlayerJoin(func) {
 
 export function onPlayerLeave(func) {
 	channel.bind('pusher:member_removed', func)
-}function isConnected() {
+}
+
+function isConnected() {
 	return pusher.connection.state === "connected"
 }
 
@@ -75,4 +136,3 @@ function onConnectionChange() {
 	pusher.connection.bind("unavailable", onConnectionChange)
 	pusher.connection.bind("failed", onConnectionChange)
 }
-

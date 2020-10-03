@@ -54,7 +54,7 @@
 
 <script>
 import { watch as vueWatch } from "vue"
-import { state, getPlayer } from "@/game/state"
+import { state, getPlayer, startWaitingTimeout, cancelWaitingTimeout } from "@/game/state"
 import * as watch from "@/game/watch"
 import Scoreboard from "@/components/Scoreboard"
 import Vote from "@/components/Vote"
@@ -118,6 +118,11 @@ export default {
 		},
 		onEvent() {
 			this.waiting = watch.allPlayersFinished()
+			if (this.waiting) {
+				startWaitingTimeout()
+			} else {
+				cancelWaitingTimeout()
+			}
 		},
 	},
 	mounted() {

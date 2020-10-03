@@ -1,10 +1,12 @@
 import { shuffle, isEqual } from "lodash"
 import { reactive } from 'vue'
 import router from "@/routes"
+import { clearEventLog, disconnect } from "./pusher"
 import * as event from "./event"
 
 export const state = reactive({
 	isConnected: false,
+	joined: false,
 	stage: "play",
 	round: 1,
 	turn: 0,
@@ -37,6 +39,9 @@ export function setOptions(options = {}) {
 }
 
 export function nextRound(push = false) {
+	clearEventLog()
+	cancelWaitingTimeout()
+
 	if (push) {
 		event.send("next-round", {})
 	}
@@ -104,6 +109,72 @@ export function plusPoints({ playerId }, push = false) {
 	getPlayer(playerId).points++
 }
 
+let stateSyncData = {}
+export function onSyncCheck({ player, data }) {
+	// Only the host can trigger a resync
+	const amHost = getPlayer(state.self).host
+	if (!amHost) return
+
+	stateSyncData[player] = data
+
+	// We need all the players sync data to work out if a resync is required
+	// Minus 1 as the host's data is not included in stateSyncData
+	if (Object.keys(stateSyncData).length !== state.players.length - 1) {
+		return
+	}
+
+	// Check to see if all the other players states have the 
+	// history count as ours. If they don't trigger a resync
+	const hostState = getStateSyncData()
+	for (const player in stateSyncData) {
+		if (isEqual(hostState, stateSyncData[player])) continue
+		event.resync()
+		break
+	}
+}
+
+function stateSyncCheck() {
+	const amHost = getPlayer(state.self).host
+	if (amHost) return
+
+	event.send(
+		"sync-check",
+		{
+			player: state.self,
+			data: getStateSyncData()
+		},
+		{ log: false }
+	)
+}
+
+function getStateSyncData() {
+	const stateSyncData = {}
+	state.players.forEach(player => {
+		stateSyncData[player.id] = player.history.length
+	})
+	return stateSyncData
+}
+
+let waitingTimeoutId = null
+export function startWaitingTimeout() {
+	if (waitingTimeoutId) return
+	waitingTimeoutId = setTimeout(() => {
+		stateSyncCheck()
+		waitingTimeoutId = null
+		startWaitingTimeout()
+	}, 40000)
+}
+
+export function cancelWaitingTimeout() {
+	resetStateSyncData()
+	clearTimeout(waitingTimeoutId)
+	waitingTimeoutId = null
+}
+
+function resetStateSyncData() {
+	stateSyncData = {}
+}
+
 export function getPlayer(id) {
 	return state.players.find((p) => p.id === id)
 }
@@ -114,7 +185,11 @@ export function makePlayOrder(players) {
 }
 
 export function resetState() {
+	clearEventLog()
+	cancelWaitingTimeout()
+	disconnect()
 	state.isConnected = false
+	state.joined = false
 	state.stage = "play"
 	state.round = 1
 	state.turn = 0
