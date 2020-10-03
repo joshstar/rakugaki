@@ -77,8 +77,7 @@ export function pushHistory(history) {
 			...history,
 			turn: state.turn,
 			creator: state.self
-		}),
-		history.type === "draw"
+		})
 	)
 }
 
