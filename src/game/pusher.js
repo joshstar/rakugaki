@@ -91,6 +91,12 @@ export function hostResync() {
 	triggerBulkEvents(eventLog)
 }
 
+export async function retryVotes() {
+	if (!isConnected()) return
+	const eventsToRetry = eventLog.filter(e => e.data && e.data.event === "plus-points")
+	await triggerBulkEvents(eventsToRetry)
+}
+
 export function clearEventLog() {
 	eventLog = []
 	resentEventIndex = 0

@@ -32,7 +32,7 @@ export function startGame(options) {
 	start()
 }
 
-export const players = (callback) => {
+export function players(callback) {
 	pusher.onPlayerJoin(() => callback(pusher.getPlayers()))
 	pusher.onPlayerLeave(() => callback(pusher.getPlayers()))
 	callback(pusher.getPlayers(), true)

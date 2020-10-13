@@ -11,6 +11,7 @@ export const state = reactive({
 	round: 1,
 	turn: 0,
 	watchPage: 0,
+	voteCount: 0,
 	self: null,
 	presenter: null,
 	players: [],
@@ -93,6 +94,7 @@ export function setWatchPage({ page, presenter }) {
 }
 
 export function pushWatchPage({ page, presenter }) {
+	state.voteCount = 0
 	event.send(
 		"watch-page",
 		setWatchPage({ page, presenter })
@@ -107,6 +109,7 @@ export function plusPoints({ playerId }, push = false) {
 		)
 	}
 	getPlayer(playerId).points++
+	state.voteCount++
 }
 
 let stateSyncData = {}
@@ -194,6 +197,7 @@ export function resetState() {
 	state.round = 1
 	state.turn = 0
 	state.watchPage = 0
+	state.voteCount = 0
 	state.self = null
 	state.presenter = null
 	state.players = []

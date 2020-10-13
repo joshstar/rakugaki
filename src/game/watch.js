@@ -1,4 +1,5 @@
 import { last } from "lodash"
+import * as pusher from "./pusher"
 import { state, getPlayer, pushWatchPage, plusPoints, nextRound } from "./state"
 
 export function allPlayersFinished() {
@@ -42,6 +43,9 @@ export function prevPage() {
 
 export function vote(playerId) {
 	plusPoints({ playerId }, true)
+}
+
+export function allVoted() {
 	checkForExactMatch()
 	const presenter = getNextPresenter()
 	if (!presenter) {
@@ -51,6 +55,10 @@ export function vote(playerId) {
 		page: 0,
 		presenter
 	})
+}
+
+export function retryVotes() {
+	pusher.retryVotes()
 }
 
 function checkForExactMatch() {

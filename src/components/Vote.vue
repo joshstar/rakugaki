@@ -1,14 +1,14 @@
 <template>
 	<div class="vote">
-		<h1 class="voting" v-if="presenting">
+		<h1 class="voting" v-if="!voted">
 			Vote for your favourite!
 			<div>Reward your favourite creation with a point!</div>
 		</h1>
 		<h1 class="voting" v-else>
-			Waiting for {{ presenter.name }} to vote for their favourite creation
+			Waiting for all players to vote for their favourite creation
 		</h1>
 
-		<div class="cards" :class="{voter: presenting}">
+		<div class="cards" :class="{voter: !voted}">
 			<div class="card" v-for="card in cards" :key="card.id" @click="vote(card.creator)">
 				<div class="board" v-if="card.type === 'draw'">
 					<div class="board box">
@@ -29,10 +29,18 @@
 </template>
 
 <script>
+import { watch as vueWatch } from "vue"
 import { state, getPlayer } from "@/game/state"
 import * as watch from "@/game/watch"
 
 export default {
+	data() {
+		return {
+			voted: false,
+			waitingTimeoutId: null,
+			stopWatch: () => {},
+		}
+	},
 	computed: {
 		cards() {
 			return getPlayer(state.presenter).history
@@ -50,13 +58,40 @@ export default {
 			return getPlayer(card.creator) || {}
 		},
 		vote(playerId) {
-			if (!this.presenting) return
-			if (playerId === state.presenter) {
+			if (this.voted) return
+			if (playerId === state.self) {
 				return window.alert("No voting for yourself")
 			}
+			this.startWaitingTimeout()
+			this.voted = true
 			watch.vote(playerId)
 		},
+		onVote() {
+			if (!this.presenting) return
+			if (state.voteCount === state.players.length) {
+				watch.allVoted()
+				clearTimeout(this.waitingTimeoutId)
+			}
+		},
+		startWaitingTimeout() {
+			if (this.waitingTimeoutId) return
+			// Retry sending the vote after 30 seconds
+			// if we're still waiting for all votes to come in
+			this.waitingTimeoutId = setTimeout(this.onWaitingTimeout, 30000)
+		},
+		async onWaitingTimeout() {
+			await watch.retryVotes()
+			this.waitingTimeoutId = null
+			this.startWaitingTimeout()
+		}
 	},
+	mounted() {
+		this.stopWatch = vueWatch(() => state.voteCount, this.onVote)
+	},
+	beforeUnmount() {
+		this.stopWatch()
+		clearTimeout(this.waitingTimeoutId)
+	}
 }
 </script>
 
