@@ -101,13 +101,23 @@ export function pushWatchPage({ page, presenter }) {
 	)
 }
 
-export function plusPoints({ playerId }, push = false) {
+export function plusPoints({ playerId, presenterId }, push = false) {
 	if (push) {
 		event.send(
-			"plus-points",
-			{ playerId }
+			"vote",
+			{ playerId, presenterId }
 		)
 	}
+	// If we've received a vote while we're still watching (not at voting yet)
+	// its possible we've fallen behind so move us to voting manually
+	else if (
+		state.stage === "watch" &&
+		state.watchPage !== "voting" &&
+		presenterId === state.presenter
+	) {
+		state.watchPage = "voting"
+	}
+
 	getPlayer(playerId).points++
 	state.voteCount++
 }

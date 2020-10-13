@@ -42,18 +42,21 @@ export function prevPage() {
 }
 
 export function vote(playerId) {
-	plusPoints({ playerId }, true)
+	plusPoints({
+		playerId,
+		presenterId: state.presenter
+	}, true)
 }
 
 export function allVoted() {
 	checkForExactMatch()
-	const presenter = getNextPresenter()
-	if (!presenter) {
+	const nextPresenter = getNextPresenter()
+	if (!nextPresenter) {
 		return nextRound(true)
 	}
 	pushWatchPage({
 		page: 0,
-		presenter
+		presenter: nextPresenter
 	})
 }
 
@@ -66,6 +69,6 @@ function checkForExactMatch() {
 	const lastCard = last(self.history)
 	if (lastCard.type !== "describe") return
 	if (self.history[0].data.toLowerCase() === lastCard.data.toLowerCase()) {
-		plusPoints({ playerId: state.self }, true)
+		plusPoints({ playerId: state.self, presenterId: state.self }, true)
 	}
 }

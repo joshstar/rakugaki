@@ -4,8 +4,8 @@
 			Vote for your favourite!
 			<div>Reward your favourite creation with a point!</div>
 		</h1>
-		<h1 class="voting" v-else>
-			Waiting for all players to vote for their favourite creation
+		<h1 class="voting waiting" v-else>
+			Waiting for all players to vote...
 		</h1>
 
 		<div class="cards" :class="{voter: !voted}">
@@ -106,6 +106,10 @@ h1 {
 		font-size: 1.4rem;
 		font-weight: 500;
 	}
+}
+
+.waiting {
+	margin-bottom: 10px;
 }
 
 .vote {

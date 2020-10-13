@@ -22,7 +22,7 @@ function onEvent(eventData) {
 			setWatchPage(data)
 			break;
 
-		case "plus-points":
+		case "vote":
 			plusPoints(data)
 			break;
 
