@@ -2,7 +2,7 @@
 	<div class="create-player">
 		<h1>Join Game</h1>
 		<h2>Name</h2>
-		<input class="box input" placeholder="Name" v-model="name" ref="input" />
+		<input class="box input" placeholder="Name" v-model="name" maxlength="16" ref="input" />
 
 		<h2>Avatar</h2>
 		<div class="btn avatar-btn" ref="emojiPicker" @click="togglePicker">
@@ -53,7 +53,7 @@ export default {
 			this.rememberUser(this.name, this.avatar)
 			this.$emit("created", {
 				id: nanoid(),
-				name: this.name.slice(0, 16),
+				name: this.name.trim().slice(0, 16),
 				avatar: this.avatar,
 				host: this.host,
 			})
