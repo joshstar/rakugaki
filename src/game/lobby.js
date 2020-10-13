@@ -35,5 +35,5 @@ export function startGame(options) {
 export const players = (callback) => {
 	pusher.onPlayerJoin(() => callback(pusher.getPlayers()))
 	pusher.onPlayerLeave(() => callback(pusher.getPlayers()))
-	callback(pusher.getPlayers())
+	callback(pusher.getPlayers(), true)
 }

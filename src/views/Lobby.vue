@@ -93,8 +93,11 @@ export default {
 	},
 	methods: {
 		onJoin() {
-			lobby.players((players) => {
+			lobby.players((players, init = false) => {
 				this.players = players
+				if (init && players.length > 13) {
+					this.leaveLobby()
+				}
 			})
 		},
 		startGame() {
@@ -164,6 +167,10 @@ export default {
 		onBodyClick(event) {
 			if (event.target.className.includes("dropdown-toggle") || event.target.className.includes("item")) return
 			if (this.editingDecks) this.toggleDeckDropdown()
+		},
+		leaveLobby() {
+			router.replace("/")
+			alert("Max player count reached (14) leaving lobby.");
 		}
 	},
 	beforeRouteLeave(to, from, next) {
