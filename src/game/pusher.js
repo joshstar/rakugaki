@@ -93,7 +93,7 @@ export function hostResync() {
 
 export async function retryVotes() {
 	if (!isConnected()) return
-	const eventsToRetry = eventLog.filter(e => e.data && e.data.event === "plus-points")
+	const eventsToRetry = eventLog.filter(e => e.data && e.data.event === "vote")
 	await triggerBulkEvents(eventsToRetry)
 }
 
