@@ -96,7 +96,7 @@ export default {
 			players: [],
 			starting: false,
 			editingDecks: false,
-			decks: ["Standard", "NSFW", "Weeb", "Simple"],
+			decks: ["Standard", "NSFW", "Simple"],
 			customCardModalActive: false,
 			customCardsString: "",
 			options: {

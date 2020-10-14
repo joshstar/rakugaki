@@ -2,7 +2,6 @@ const decks = {
 	standard: require("../decks/standard"),
 	nsfw: require("../decks/nsfw"),
 	simple: require("../decks/simple"),
-	weeb: require("../decks/weeb"),
 }
 
 const rand = (arr) => arr[arr.length * Math.random() | 0]
