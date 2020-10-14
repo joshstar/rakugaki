@@ -50,7 +50,10 @@
 
 		<div class="invite-wrap" @click="copyUrl" v-if="inviteUrl">
 			<h1>Invite your friends!</h1>
-			<input class="box invite" :value="inviteUrl" readonly ref="invite">
+			<div class="invite-input-wrap">
+				<div class="hover-text">Hover over me to see the invite link!</div>
+				<input class="box invite" :value="inviteUrl" readonly ref="invite">
+			</div>
 		</div>
 
 		<teleport to="body">
@@ -350,13 +353,42 @@ export default {
 	}
 }
 
+.invite-input-wrap {
+	position: relative;
+	
+	.hover-text {
+		align-items: center;
+		color: var(--text-light);
+		display: flex;
+		height: 100%;
+		justify-content: center;
+		opacity: 0.9;
+		pointer-events: none;
+		position: absolute;
+		transition: opacity 0.3s ease;
+		user-select: none;
+		width: 100%;
+	}
+
+	&:hover {
+		.hover-text {
+			opacity: 0;
+		}
+
+		.invite {
+			color: var(--text-light);
+		}
+	}
+}
+
 .invite {
 	border: none;
-	color: var(--text-light);
+	color: #ffffff00;
 	font-weight: 500;
 	max-width: 500px;
 	outline: none;
 	padding: 22px;
+	transition: color 0.3s ease;
 	width: 100%;
 }
 
