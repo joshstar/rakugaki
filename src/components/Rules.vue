@@ -5,6 +5,7 @@
 			<div class="rule">
 				<span>#1</span>
 				You'll be given the choice of multiple phrase cards, pick one to draw!
+				<sup>(No words allowed!)</sup>
 			</div>
 
 			<div class="rule">
