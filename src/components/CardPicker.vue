@@ -1,7 +1,10 @@
 <template>
 	<div class="card-picker">
 		<h1>Pick a card to draw</h1>
-		<div class="cards" :class="{'more-cards': cards.length > 4}">
+		<div class="loading" v-if="!cards.length">
+			Loading cards...
+		</div>
+		<div class="cards" :class="{'more-cards': cards.length > 4}" v-else>
 			<div class="card" :class="getColor(index)" v-for="(card, index) in cards" :key="index" @click="pick(card)">
 				{{ card }}
 			</div>
@@ -37,6 +40,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.loading {
+	color: var(--text-light);
+	margin-top: 60px;
+	text-align: center;
+}
 
 .cards {
 	display: grid;
