@@ -32,6 +32,9 @@
 						</div>
 					</div>
 				</div>
+				<div class="btn option" @click="toggleCustomCardModal">
+					{{ options.customCards.length ? options.customCards.length : "" }} Custom Card{{ options.customCards.length !== 1 ? "s" : ""}}
+				</div>
 			</div>
 
 			<div class="btn wait-btn" v-if="starting">
@@ -49,6 +52,23 @@
 			<h1>Invite your friends!</h1>
 			<input class="box invite" :value="inviteUrl" readonly ref="invite">
 		</div>
+
+		<teleport to="body">
+			<div v-if="customCardModalActive" class="modal-wrap">
+				<div class="modal box">
+					<h1 class="title">Custom Phrase Cards</h1>
+					<div class="sub-title">Enter your custom phrase cards below, comma separated.</div>
+					<textarea 
+						class="custom-card-input"
+						v-model="customCardsString" 
+						placeholder="Custom phrase card, Monkey with a gun, Laughing horse, Lost in IKEA"
+					/>
+					<div class="btn option" @click="toggleCustomCardModal">
+						Save
+					</div>
+				</div>
+			</div>
+		</teleport>
 
 		<rules />
 	</template>
@@ -77,12 +97,15 @@ export default {
 			starting: false,
 			editingDecks: false,
 			decks: ["Standard", "NSFW", "Weeb", "Simple"],
+			customCardModalActive: false,
+			customCardsString: "",
 			options: {
 				timeLimit: 0,
 				rounds: 1,
 				colors: false,
 				cardAmount: 4,
 				decks: ["standard"],
+				customCards: [],
 			}
 		}
 	},
@@ -105,8 +128,8 @@ export default {
 				return alert("Connot start game while connecting, please wait...")
 			}
 
-			if (!this.options.decks.length) {
-				return alert("Must select at least 1 deck")
+			if (!this.options.decks.length && !this.options.customCards.length) {
+				return alert("Must select at least 1 deck or have custom cards")
 			}
 
 			if (process.env.NODE_ENV === "production") {
@@ -164,9 +187,18 @@ export default {
 		isDeckActive(deck) {
 			return this.options.decks.includes(deck.toLowerCase())
 		},
+		toggleCustomCardModal() {
+			this.customCardModalActive = !this.customCardModalActive
+			if (this.customCardModalActive) {
+				this.customCardsString = this.options.customCards.join(", ")
+			} else {
+				this.options.customCards = this.customCardsString.split(",").map(c => c.trim()).filter(Boolean)
+			}
+		},
 		onBodyClick(event) {
 			if (event.target.className.includes("dropdown-toggle") || event.target.className.includes("item")) return
 			if (this.editingDecks) this.toggleDeckDropdown()
+			if (this.customCardModalActive && event.target.className.includes("modal-wrap")) this.toggleCustomCardModal()
 		},
 		leaveLobby() {
 			router.replace("/")
@@ -326,5 +358,73 @@ export default {
 	outline: none;
 	padding: 22px;
 	width: 100%;
+}
+
+.modal-wrap {
+	align-items: center;
+	background: #34384b8a;
+	display: grid;
+	height: 100vh;
+	justify-content: center;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100vw;
+}
+
+.modal {
+	animation: slide-fade-up-in 200ms;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 600;
+	padding: 40px;
+
+	.title {
+		color: var(--text);
+		font-size: 2rem;
+		padding-bottom: 0;
+		text-align: left;
+	}
+
+	.sub-title {
+		font-size: 1.4rem;
+		padding-top: 8px;
+		padding-bottom: 30px;
+		color: var(--text-light);
+		font-weight: 400;
+	}
+}
+
+.custom-card-input {
+	background: var(--background);
+	border: 0;
+	border-radius: 6px;
+	color: var(--text);
+	font-size: 1.4rem;
+	font-weight: 500;
+	margin-bottom: 30px;
+	min-height: 120px;
+	min-width: 300px;
+	padding: 20px;
+	width: 50vw;
+
+	&:active,
+	&:focus {
+		border: 0;
+		outline: none;
+	}
+}
+
+
+@keyframes slide-fade-up-in {
+	0% {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	60% {
+		opacity: 1;
+	}
+	100% {
+		transform: none;
+	}
 }
 </style>

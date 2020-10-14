@@ -1,3 +1,4 @@
+import { sampleSize, random } from "lodash"
 import { state, pushHistory, getPlayer } from "./state"
 import { init } from "./event"
 import router from "@/routes"
@@ -8,11 +9,30 @@ export function startGame() {
 }
 
 export async function getCards() {
-	const decks = state.options.decks.join()
+	const customCards = state.options.customCards
+	const decks = state.options.decks
 	const amount = state.options.cardAmount
-	const response = await fetch(`/api/cards?decks=${decks}&amount=${amount}`)
+
+	if (customCards.length && !decks.length) {
+		return sampleSize(customCards, amount)
+	}
+
+	const response = await fetch(`/api/cards?decks=${decks.join()}&amount=${amount}`)
 	const { cards } = await response.json()
-	return cards
+
+	if (!customCards.length) {
+		return cards
+	}
+
+	const replacementCards = sampleSize(customCards, Math.floor(amount / 2))
+	const useReplacementPercentage = customCards.length < 15 ? customCards.length : 30
+	replacementCards.forEach((card, n) => {
+		if (random(100) < useReplacementPercentage) {
+			cards[n] = card
+		}
+	});
+
+	return cards;
 }
 
 export function pickCard(card) {

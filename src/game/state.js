@@ -23,6 +23,7 @@ export const state = reactive({
 		colors: false,
 		decks: ["standard"],
 		cardAmount: 4,
+		customCards: [],
 	},
 })
 
@@ -216,8 +217,10 @@ export function resetState() {
 		rounds: 1,
 		playOrder: [],
 		timeLimit: null,
+		colors: false,
 		decks: ["standard"],
 		cardAmount: 4,
+		customCards: [],
 	}
 }
 
