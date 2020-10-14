@@ -77,6 +77,14 @@ export function onGameEvent(func) {
 	channel.bind("client-game-event", func)
 }
 
+export function sendGameInProgressEvent() {
+	channel.trigger("client-game-in-progress", {})
+}
+
+export function onJoinWhileGameInProgress(func) {
+	channel.bind("client-game-in-progress", func)
+}
+
 export function sendResyncEvent() {
 	channel.trigger("client-resync", {})
 }

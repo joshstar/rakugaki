@@ -1,3 +1,4 @@
+import router from "@/routes"
 import * as pusher from "./pusher"
 import { state, setPlayers, setOptions, makePlayOrder } from "./state"
 import { startGame as start } from "./play"
@@ -9,6 +10,7 @@ export function join(player, room, onJoin) {
 	pusher.connect(self, room, () => {
 		if (!self.host) {
 			pusher.onGameStart(startGame)
+			pusher.onJoinWhileGameInProgress(leaveGame)
 		}
 		onJoin()
 	})
@@ -25,6 +27,7 @@ export function startGame(options) {
 		}
 
 		pusher.startGame(options)
+		pusher.onPlayerJoin(onJoinAfterGameStart)
 	}
 
 	setPlayers(self, players)
@@ -36,4 +39,14 @@ export function players(callback) {
 	pusher.onPlayerJoin(() => callback(pusher.getPlayers()))
 	pusher.onPlayerLeave(() => callback(pusher.getPlayers()))
 	callback(pusher.getPlayers(), true)
+}
+
+function onJoinAfterGameStart() {
+	pusher.sendGameInProgressEvent()
+}
+
+function leaveGame() {
+	if (state.joined) return
+	router.replace("/")
+	alert("Sorry! This game has already started.")
 }
