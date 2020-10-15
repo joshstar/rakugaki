@@ -30,9 +30,9 @@ export async function getCards() {
 		if (random(100) < useReplacementPercentage) {
 			cards[n] = card
 		}
-	});
+	})
 
-	return cards;
+	return cards
 }
 
 export function pickCard(card) {

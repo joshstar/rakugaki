@@ -113,8 +113,7 @@ export default {
 		setNextPresenter() {
 			state.presenter = watch.getNextPresenter()
 		},
-		onEvent(a) {
-			console.log("onEvent", a);
+		onEvent() {
 			this.waiting = watch.allPlayersFinished()
 			cancelWaitingTimeout()
 			startWaitingTimeout()

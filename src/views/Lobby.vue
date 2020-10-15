@@ -205,7 +205,7 @@ export default {
 		},
 		leaveLobby() {
 			router.replace("/")
-			alert("Max player count reached (14) leaving lobby.");
+			alert("Max player count reached (14) leaving lobby.")
 		}
 	},
 	beforeRouteLeave(to, from, next) {

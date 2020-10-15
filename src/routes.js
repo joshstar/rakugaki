@@ -12,23 +12,23 @@ const routes = [
 		component: Home
 	},
 	{
-		path: '/lobby/:room?',
+		path: "/lobby/:room?",
 		name: "Lobby",
 		component: Lobby,
 		props: true
 	},
 	{
-		path: '/play',
+		path: "/play",
 		name: "Play",
 		component: Play
 	},
 	{
-		path: '/watch',
+		path: "/watch",
 		name: "Watch",
 		component: Watch
 	},
 	{
-		path: '/end',
+		path: "/end",
 		name: "End",
 		component: End
 	}
