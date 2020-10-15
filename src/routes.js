@@ -31,6 +31,13 @@ const routes = [
 		path: "/end",
 		name: "End",
 		component: End
+	},
+	{
+		path: "/:catchAll(.*)",
+		name: "NotFound",
+		redirect: {
+			name: "Home"
+		}
 	}
 ]
 
