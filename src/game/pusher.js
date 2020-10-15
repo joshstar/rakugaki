@@ -6,7 +6,9 @@ import { state } from "./state"
 let pusher = null,
 	channel = null,
 	eventLog = [],
-	resentEventIndex = 0
+	resentEventIndex = 0,
+	connectionInfo = {},
+	eventBindings = {}
 
 export function connect(user, channelName, onReady) {
 	pusher = new Pusher("", {
@@ -19,13 +21,16 @@ export function connect(user, channelName, onReady) {
 				"X-USER-AVATAR": user.avatar,
 				"X-USER-HOST": Number(user.host)
 			} 
-		}
+		},
+		enabledTransports: ["ws", "flash"],
+		disabledTransports: ["flash", "sockjs", "xhr_streaming", "xhr_polling"]
 	})
 	channel = pusher.subscribe(`presence-${channelName}`)
 	channel.bind("pusher:subscription_succeeded", () => {
 		onReady()
 		retryFailedEvents()
 	})
+	connectionInfo = {user, channelName}
 	onConnectionChange()
 	onResync()
 }
@@ -38,6 +43,16 @@ function triggerEvent(trigger, data, log = true) {
 	if (connected) {
 		channel.trigger(trigger, data)
 	}
+}
+
+function bindEvent(event, func) {
+	channel.bind(event, func)
+
+	// Add the event and function to the event
+	// bindings object so we can use them to
+	// reconnect the bindings in the event
+	// of a manual reconnect
+	eventBindings[event] = func
 }
 
 async function triggerBulkEvents(events) {
@@ -66,7 +81,7 @@ export function startGame(options) {
 }
 
 export function onGameStart(func) {
-	channel.bind("client-start-game", func)
+	bindEvent("client-start-game", func)
 }
 
 export function sendGameEvent(event, log = true) {
@@ -74,7 +89,7 @@ export function sendGameEvent(event, log = true) {
 }
 
 export function onGameEvent(func) {
-	channel.bind("client-game-event", func)
+	bindEvent("client-game-event", func)
 }
 
 export function sendGameInProgressEvent() {
@@ -82,7 +97,7 @@ export function sendGameInProgressEvent() {
 }
 
 export function onJoinWhileGameInProgress(func) {
-	channel.bind("client-game-in-progress", func)
+	bindEvent("client-game-in-progress", func)
 }
 
 export function sendResyncEvent() {
@@ -97,12 +112,6 @@ function onResync() {
 
 export function hostResync() {
 	triggerBulkEvents(eventLog)
-}
-
-export async function retryVotes() {
-	if (!isConnected()) return
-	const eventsToRetry = eventLog.filter(e => e.data && e.data.event === "vote")
-	await triggerBulkEvents(eventsToRetry)
 }
 
 export function clearEventLog() {
@@ -132,15 +141,22 @@ export function getPlayers() {
 }
 
 export function onPlayerJoin(func) {
-	channel.bind('pusher:member_added', func)
+	bindEvent('pusher:member_added', func)
 }
 
 export function onPlayerLeave(func) {
-	channel.bind('pusher:member_removed', func)
+	bindEvent('pusher:member_removed', func)
 }
 
 function isConnected() {
 	return pusher.connection.state === "connected"
+}
+
+function rebindEvents() {
+	for (const event in eventBindings) {
+		const func = eventBindings[event]
+		channel.bind(event, func)
+	}
 }
 
 function onConnectionChange() {
@@ -148,5 +164,12 @@ function onConnectionChange() {
 	pusher.connection.bind("connected", onConnectionChange)
 	pusher.connection.bind("connecting", onConnectionChange)
 	pusher.connection.bind("unavailable", onConnectionChange)
-	pusher.connection.bind("failed", onConnectionChange)
+	pusher.connection.bind("failed", async () => {
+		onConnectionChange()
+		await sleep(5000)
+		disconnect()
+		connect(connectionInfo.user, connectionInfo.channelName, () => {
+			rebindEvents()
+		})
+	})
 }

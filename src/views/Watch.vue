@@ -69,7 +69,7 @@ export default {
 	data() {
 		return {
 			waiting: true,
-			stopWatch: () => {},
+			stopWatch: [],
 			icons: {
 				leftSvg,
 				rightSvg
@@ -102,9 +102,6 @@ export default {
 		lastPage() {
 			return state.players.length
 		},
-		voting() {
-			return state.stage === "voting"
-		}
 	},
 	methods: {
 		next() {
@@ -116,22 +113,22 @@ export default {
 		setNextPresenter() {
 			state.presenter = watch.getNextPresenter()
 		},
-		onEvent() {
+		onEvent(a) {
+			console.log("onEvent", a);
 			this.waiting = watch.allPlayersFinished()
-			if (this.waiting) {
-				startWaitingTimeout()
-			} else {
-				cancelWaitingTimeout()
-			}
+			cancelWaitingTimeout()
+			startWaitingTimeout()
 		},
 	},
 	mounted() {
 		this.setNextPresenter()
 		this.waiting = watch.allPlayersFinished()
-		this.stopWatch = vueWatch(state.players, this.onEvent)
+		this.stopWatch.push(vueWatch(state.players, this.onEvent))
+		this.stopWatch.push(vueWatch(() => state.watchPage, this.onEvent))
 	},
 	beforeUnmount() {
-		this.stopWatch()
+		this.stopWatch.map(s => s())
+		cancelWaitingTimeout()
 	}
 }
 </script>

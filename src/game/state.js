@@ -98,7 +98,10 @@ export function pushWatchPage({ page, presenter }) {
 	state.voteCount = 0
 	event.send(
 		"watch-page",
-		setWatchPage({ page, presenter })
+		setWatchPage({ page, presenter }),
+		{
+			log: page === "voting"
+		}
 	)
 }
 
@@ -164,7 +167,10 @@ function stateSyncCheck() {
 function getStateSyncData() {
 	const stateSyncData = {}
 	state.players.forEach(player => {
-		stateSyncData[player.id] = player.history.length
+		stateSyncData[player.id] = [
+			player.history.length,
+			player.points
+		]
 	})
 	return stateSyncData
 }

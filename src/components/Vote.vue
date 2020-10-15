@@ -37,7 +37,6 @@ export default {
 	data() {
 		return {
 			voted: false,
-			waitingTimeoutId: null,
 			stopWatch: () => {},
 		}
 	},
@@ -62,7 +61,6 @@ export default {
 			if (playerId === state.self) {
 				return window.alert("No voting for yourself")
 			}
-			this.startWaitingTimeout()
 			this.voted = true
 			watch.vote(playerId)
 		},
@@ -70,27 +68,14 @@ export default {
 			if (!this.presenting) return
 			if (state.voteCount === state.players.length) {
 				watch.allVoted()
-				clearTimeout(this.waitingTimeoutId)
 			}
 		},
-		startWaitingTimeout() {
-			if (this.waitingTimeoutId) return
-			// Retry sending the vote after 30 seconds
-			// if we're still waiting for all votes to come in
-			this.waitingTimeoutId = setTimeout(this.onWaitingTimeout, 30000)
-		},
-		async onWaitingTimeout() {
-			await watch.retryVotes()
-			this.waitingTimeoutId = null
-			this.startWaitingTimeout()
-		}
 	},
 	mounted() {
 		this.stopWatch = vueWatch(() => state.voteCount, this.onVote)
 	},
 	beforeUnmount() {
 		this.stopWatch()
-		clearTimeout(this.waitingTimeoutId)
 	}
 }
 </script>
