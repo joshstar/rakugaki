@@ -92,6 +92,14 @@ export function onGameEvent(func) {
 	bindEvent("client-game-event", func)
 }
 
+export function kickPlayer(player) {
+	channel.trigger(`client-kick-player-${player}`, {})
+}
+
+export function onKicked(player, func) {
+	bindEvent(`client-kick-player-${player}`, func)
+}
+
 export function sendGameInProgressEvent() {
 	channel.trigger("client-game-in-progress", {})
 }

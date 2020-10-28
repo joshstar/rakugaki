@@ -219,6 +219,26 @@ export default {
 		leaveLobby() {
 			router.replace("/")
 			alert("Max player count reached (30) leaving lobby.")
+		},
+		onRefresh() {
+			try {
+				const oldRoom = localStorage.getItem("room").replace("--host", "")
+				const wasHost = localStorage.getItem("room").endsWith("--host")
+				if (! this.room && oldRoom) {
+					router.replace(`/lobby/${oldRoom}`)
+					this.setupRoom(oldRoom, wasHost)
+				}
+			} catch (e) {e}
+		},
+		setupRoom(room, hostOverride = false) {
+			this.roomCode = room
+			this.isHost = hostOverride || !!this.$route.query.host
+			this.inviteUrl = `${window.location.origin}/lobby/${room}`
+			router.replace("/lobby") // Hide room code from url
+
+			if (room) {
+				localStorage.setItem("room", `${room}${this.isHost ? "--host" : ""}`)
+			}
 		}
 	},
 	beforeRouteLeave(to, from, next) {
@@ -231,10 +251,8 @@ export default {
 		next()
 	},
 	created() {
-		this.isHost = !!this.$route.query.host
-		this.roomCode = this.room
-		this.inviteUrl = `${window.location.origin}${this.$route.path}`
-		router.replace("/lobby") // Hide room code from url
+		this.setupRoom(this.room)
+		this.onRefresh()
 
 		if (this.isHost) {
 			if (process.env.NODE_ENV === "production") {
