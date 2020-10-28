@@ -6,6 +6,9 @@
 				<div class="player" v-for="player in lobbyPlayers" :key="player.id">
 					<img class="avatar" :src="player.avatar" >
 					{{ player.name }}
+					<div class="kick" v-if="self.host && player.id !== self.id" @click="kickPlayer(player)">
+						<icon :data="icons.timesSvg" />
+					</div>
 				</div>
 			</div>
 
@@ -79,10 +82,11 @@
 
 <script>
 import router from "@/routes"
-import * as lobby from "@/game/lobby"
-import CreatePlayer from "../components/CreatePlayer"
-import Rules from "@/components/Rules"
 import { state } from "@/game/state"
+import * as lobby from "@/game/lobby"
+import Rules from "@/components/Rules"
+import timesSvg from "@/assets/icons/times.svg"
+import CreatePlayer from "../components/CreatePlayer"
 
 export default {
 	props: ["room"],
@@ -109,6 +113,9 @@ export default {
 				cardAmount: 4,
 				decks: ["standard"],
 				customCards: [],
+			},
+			icons: {
+				timesSvg
 			}
 		}
 	},
@@ -203,6 +210,12 @@ export default {
 			if (this.editingDecks) this.toggleDeckDropdown()
 			if (this.customCardModalActive && event.target.className.includes("modal-wrap")) this.toggleCustomCardModal()
 		},
+		kickPlayer(player) {
+			if (!this.self.host) return
+			const kick = confirm(`Are you sure you want to kick ${player.name}? They will not be able to join this lobby again.`)
+			if (!kick) return
+			lobby.kickPlayer(player.id)
+		},
 		leaveLobby() {
 			router.replace("/")
 			alert("Max player count reached (14) leaving lobby.")
@@ -275,13 +288,35 @@ export default {
 	display: grid;
 	font-size: 1.8rem;
 	gap: 20px;
-	grid-template-columns: 32px auto;
+	grid-template-columns: 32px auto auto;
 	align-items: center;
+
+	&:hover .kick {
+		opacity: 0.8;
+	}
 }
 
 .avatar {
 	width: 32px;
 	height: 32px;
+}
+
+.kick {
+	color: var(--text-light);
+	cursor: pointer;
+	margin-left: auto;
+	opacity: 0;
+	transition: opacity 0.2s ease, color 0.2s ease;
+
+	svg {
+		height: 22px;
+		width: 22px;
+	}
+
+	&:hover {
+		color: #e91e42;
+		opacity: 1;
+	}
 }
 
 .options {
