@@ -128,7 +128,7 @@ export default {
 		onJoin() {
 			lobby.players((players, init = false) => {
 				this.players = players
-				if (init && players.length > 13) {
+				if (init && players.length > 30) {
 					this.leaveLobby()
 				}
 			})
@@ -218,7 +218,7 @@ export default {
 		},
 		leaveLobby() {
 			router.replace("/")
-			alert("Max player count reached (14) leaving lobby.")
+			alert("Max player count reached (30) leaving lobby.")
 		}
 	},
 	beforeRouteLeave(to, from, next) {
