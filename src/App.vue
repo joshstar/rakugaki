@@ -62,6 +62,7 @@ html {
 
 body {
 	background: var(--background);
+	overscroll-behavior: none;
 }
 
 #app {
