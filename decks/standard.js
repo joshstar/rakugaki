@@ -96,7 +96,7 @@ module.exports = [
 	"Life giving you lemons",
 	"Living in a skip",
 	"Lost in IKEA",
-	"Lost in a ball bit",
+	"Lost in a ball pit",
 	"Making a bald-headed man cry",
 	"Making an arse out of yourself",
 	"Making an onion cry",

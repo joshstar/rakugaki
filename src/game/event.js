@@ -57,3 +57,5 @@ export function resync() {
 	// Manually call onResync for the host
 	pusher.hostResync()
 }
+
+window.resync = resync;

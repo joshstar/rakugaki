@@ -1,5 +1,4 @@
 module.exports = [
-	"1950's Sex Ed poster",
 	"A happy ending",
 	"A little slap and tickle",
 	"Affair with the milkman",
@@ -25,7 +24,6 @@ module.exports = [
 	"Casting couch",
 	"Cat orgy",
 	"Christmas dildo",
-	"Coat hanger abortion",
 	"Constipation",
 	"Cream pie",
 	"DIY lobotomy",
