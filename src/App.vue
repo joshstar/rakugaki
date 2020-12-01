@@ -4,13 +4,26 @@
 	<div class="connection-status" v-if="connecting">
 		Connecting...
 	</div>
+	<div class="connection-status" v-if="resyncing">
+		Resyncing...
+	</div>
+	<div class="resync-btn" v-if="isHost" @click="resync">
+		Resync
+	</div>
 </template>
 
 <script>
 import router from "@/routes"
-import { state } from "@/game/state"
+import { state, getPlayer } from "@/game/state"
+import { resync } from "@/game/event"
+import { sleep } from "@/util"
 
 export default {
+	data() {
+		return {
+			resyncing: false,
+		}
+	},
 	computed: {
 		connecting() {
 			return !state.isConnected && state.self
@@ -22,12 +35,25 @@ export default {
 		linkLogo() {
 			const { name } = this.$route
 			return name === "End"
+		},
+		isHost() {
+			const self = getPlayer(state.self)
+			return self && self.host
 		}
 	},
 	methods: {
 		goHome() {
 			if (!this.linkLogo) return
 			router.push("/")
+		},
+		async resync() {
+			if (!confirm(
+				`Re-sync all player data? Only do this if players are experiencing issues`)
+			) return
+			resync()
+			this.resyncing = true
+			await sleep(5000)
+			this.resyncing = false
 		}
 	}
 }
@@ -128,6 +154,27 @@ body {
 	text-align: center;
 	top: 12px;
 	z-index: 90;
+}
+
+.resync-btn {
+	background: var(--foreground);
+	border-radius: 6px;
+	bottom: 12px;
+	color: var(--text-light);
+	cursor: pointer;
+	font-size: 1.2rem;
+	font-weight: 700;
+	opacity: 0.4;
+	padding: 10px 12px;
+	position: absolute;
+	right: 10px;
+	text-align: center;
+	transition: opacity 0.2s ease;
+	z-index: 90;
+
+	&:hover {
+		opacity: 1;
+	}
 }
 
 h1 {
