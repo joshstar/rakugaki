@@ -9,13 +9,16 @@
 		</h1>
 
 		<div class="cards" :class="{voter: !voted}">
-			<div class="card" v-for="card in cards" :key="card.id" @click="vote(card.creator)">
+			<div v-for="card in cards" :key="card.id" @click="vote(card)">
 				<div class="board" v-if="card.type === 'draw'">
 					<div class="board box">
 						<img :src="card.data">
 					</div>
 				</div>
 				<div class="describe box" v-else-if="card.type === 'describe'">
+					{{ card.data }}
+				</div>
+				<div class="card" v-else-if="card.type === 'card'">
 					{{ card.data }}
 				</div>
 
@@ -42,8 +45,7 @@ export default {
 	},
 	computed: {
 		cards() {
-			return getPlayer(state.presenter).history
-				.filter(({ type }) => type !== "card")
+			return getPlayer(state.presenter).history;
 		},
 		presenting() {
 			return state.self === state.presenter
@@ -56,8 +58,10 @@ export default {
 		getCreator(card) {
 			return getPlayer(card.creator) || {}
 		},
-		vote(playerId) {
+		vote(card) {
+			const playerId = card.creator
 			if (this.voted) return
+			if (card.type === "card") return
 			if (playerId === state.self) {
 				return window.alert("No voting for yourself")
 			}
@@ -139,6 +143,7 @@ h1 {
 	> div {
 		display: grid;
 		justify-items: center;
+		align-items: center;
 	}
 
 	&.voter > div {
@@ -151,6 +156,28 @@ h1 {
 	}
 }
 
+.card {
+	align-items: center;
+	background: #E73289;
+	border-radius: 6px;
+	box-shadow: 0px 1px 6px rgba(231, 50, 137, 0.3), 0px 4px 30px rgba(231, 50, 137, 0.2);
+	color: #fff;
+	cursor: default;
+	display: flex;
+	font-size: 2rem;
+	height: 232px;
+	justify-content: center;
+	line-height: 27px;
+	padding: 20px;
+	text-align: center;
+	user-select: none;
+	width: 174px;
+
+	&:hover {
+		transform: scale(1) !important;
+	}
+}
+
 .board {
 	max-width: 300px;
 	max-height: 300px;
@@ -159,8 +186,9 @@ h1 {
 	padding: 0;
 
 	img {
-		width: 100%;
+		border-radius: 8px;
 		height: 100%;
+		width: 100%;
 	}
 }
 
