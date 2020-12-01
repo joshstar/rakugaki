@@ -12,16 +12,25 @@
 			</div>
 		</div>
 
-		<div class="cards">
-			<div class="card" v-for="card in cards" :key="card.id">
-				<div class="board">
-					<div class="board box">
-						<img :src="card.data">
+		<div class="rounds">
+			<div class="cards" v-for="(cards, key) in rounds" :key="key">
+				<div v-for="card in cards" :key="card.id">
+					<div class="board" v-if="card.type === 'draw'">
+						<div class="board box">
+							<img :src="card.data">
+						</div>
 					</div>
-				</div>
-				<div class="player" v-if="card.creator">
-					<img class="avatar" :src="getCreator(card).avatar">
-					{{ getCreator(card).name }}
+					<div class="describe box" v-else-if="card.type === 'describe'">
+						{{ card.data }}
+					</div>
+					<div class="card" v-else-if="card.type === 'card'">
+						{{ card.data }}
+					</div>
+	
+					<div class="player" v-if="card.creator">
+						<img class="avatar" :src="getCreator(card).avatar">
+						{{ getCreator(card).name }}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -29,7 +38,7 @@
 </template>
 
 <script>
-import { orderBy, flatten } from "lodash"
+import { orderBy } from "lodash"
 import { state, getPlayer } from "@/game/state"
 
 export default {
@@ -37,9 +46,8 @@ export default {
 		players() {
 			return orderBy(state.players, ["points"], ["desc"])
 		},
-		cards() {
-			return flatten(state.roundHistory)
-				.filter(card => card.type === "draw")
+		rounds() {
+			return state.roundHistory
 		},
 	},
 	methods: {
@@ -75,6 +83,7 @@ h1 {
 	grid-template-columns: 200px 200px;
 	gap: 10px 20px;
 	justify-items: center;
+	margin-bottom: 80px;
 
 	@media only screen and (max-width: 700px) {
 		grid-template-columns: 1fr;
@@ -121,10 +130,12 @@ h1 {
 }
 
 .cards {
+	border-bottom: solid 1px var(--border);
 	display: grid;
 	gap: 40px;
 	grid-template-columns: 1fr 1fr 1fr;
-	margin-top: 80px;
+	margin-bottom: 40px;
+	padding-bottom: 45px;
 
 	@media only screen and (max-width: 1000px) {
 		grid-template-columns: 1fr 1fr;
@@ -137,7 +148,30 @@ h1 {
 	> div {
 		display: grid;
 		justify-items: center;
+		align-items: center;
 	}
+
+	&:last-of-type {
+		border: none;
+	}
+}
+
+.card {
+	align-items: center;
+	background: #E73289;
+	border-radius: 6px;
+	box-shadow: 0px 1px 6px rgba(231, 50, 137, 0.3), 0px 4px 30px rgba(231, 50, 137, 0.2);
+	color: #fff;
+	cursor: default;
+	display: flex;
+	font-size: 2rem;
+	height: 232px;
+	justify-content: center;
+	line-height: 27px;
+	padding: 20px;
+	text-align: center;
+	user-select: none;
+	width: 174px;
 }
 
 .board {
@@ -146,8 +180,24 @@ h1 {
 	padding: 0;
 
 	img {
-		width: 100%;
+		border-radius: 8px;
 		height: 100%;
+		width: 100%;
 	}
+}
+
+.describe {
+	align-items: center;
+	color: #000;
+	display: flex;
+	font-size: 1.5rem;
+	height: 240px;
+	justify-content: center;
+	line-height: 27px;
+	padding: 10px;
+	text-align: center;
+	width: 240px;
+	word-break: break-word;
+	overflow: auto;
 }
 </style>
