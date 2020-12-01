@@ -236,6 +236,13 @@ export default {
 			this.inviteUrl = `${window.location.origin}/lobby/${room}`
 			router.replace("/lobby") // Hide room code from url
 
+			if (this.isHost) {
+				const options = lobby.getSavedOptions()
+				if (options) {
+					this.options = options
+				}
+			}
+
 			if (room) {
 				localStorage.setItem("room", `${room}${this.isHost ? "--host" : ""}`)
 			}

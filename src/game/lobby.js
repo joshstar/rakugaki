@@ -26,6 +26,7 @@ export function startGame(options) {
 	state.joined = true
 	const players = pusher.getPlayers()
 	if (self.host) {
+		saveOptions(options)
 		options = {
 			playOrder: makePlayOrder(players),
 			...options
@@ -44,6 +45,17 @@ export function players(callback) {
 	pusher.onPlayerJoin(() => callback(pusher.getPlayers()))
 	pusher.onPlayerLeave(() => callback(pusher.getPlayers()))
 	callback(pusher.getPlayers(), true)
+}
+
+export function getSavedOptions() {
+	const options = localStorage.getItem("options")
+	if (!options) return
+	return JSON.parse(options)
+}
+
+function saveOptions(options) {
+	const optionsString = JSON.stringify(options)
+	localStorage.setItem("options", optionsString)
 }
 
 export function kickPlayer(playerId) {
