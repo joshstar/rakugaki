@@ -103,7 +103,7 @@ export default {
 	margin-top: 80px;
 
 	@media only screen and (max-height: 1080px) {
-		margin-top: 50px;
+		margin-top: 40px;
 	}
 }
 

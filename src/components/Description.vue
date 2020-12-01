@@ -87,4 +87,10 @@ export default {
 		margin-top: 35px;
 	}
 }
+
+@media only screen and (max-height: 1080px) {
+	h1 {
+		padding-bottom: 30px;
+	}
+}
 </style>

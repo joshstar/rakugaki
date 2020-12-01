@@ -2,37 +2,39 @@
 	<div class="draw" :style="boardCursor">
 		<countdown @trigger="submit" />
 		<h1><div>Draw</div>{{ description }}</h1>
-		<canvas class="board box" ref="board" width="600" height="600" />
+		<div class="canvas-wrap">
+			<canvas class="board box" ref="board" width="600" height="600" />
 
-		<div class="tools box">
-			<div>
-				<div class="btn" @click="setTool('draw')" :class="{selected: tool === 'draw'}">
-					<icon :data="icons.drawSvg" />
+			<div class="tools box">
+				<div class="tool-btns">
+					<div class="btn" @click="setTool('draw')" :class="{selected: tool === 'draw'}">
+						<icon :data="icons.drawSvg" />
+					</div>
+					<div class="btn" @click="setTool('flood')" :class="{selected: tool === 'flood'}">
+						<icon :data="icons.fillSvg" />
+					</div>
+					<div class="btn" @click="setTool('erase')" :class="{selected: tool === 'erase'}">
+						<icon :data="icons.eraseSvg" />
+					</div>
 				</div>
-				<div class="btn" @click="setTool('flood')" :class="{selected: tool === 'flood'}">
-					<icon :data="icons.fillSvg" />
+				<div class="size-btns">
+					<div class="btn" @click="setLineSize(15)" :class="{selected: lineSize == 15}">
+						<div class="circle s15" />
+					</div>
+					<div class="btn" @click="setLineSize(10)" :class="{selected: lineSize == 10}">
+						<div class="circle s10" />
+					</div>
+					<div class="btn" @click="setLineSize(5)" :class="{selected: lineSize == 5}">
+						<div class="circle s5" />
+					</div>
 				</div>
-				<div class="btn" @click="setTool('erase')" :class="{selected: tool === 'erase'}">
-					<icon :data="icons.eraseSvg" />
-				</div>
-			</div>
-			<div>
-				<div class="btn" @click="undo">
-					<icon :data="icons.undoSvg" />
-				</div>
-				<div class="btn" @click="redo">
-					<icon :data="icons.redoSvg" />
-				</div>
-			</div>
-			<div>
-				<div class="btn" @click="setLineSize(5)" :class="{selected: lineSize == 5}">
-					<div class="circle s5" />
-				</div>
-				<div class="btn" @click="setLineSize(10)" :class="{selected: lineSize == 10}">
-					<div class="circle s10" />
-				</div>
-				<div class="btn" @click="setLineSize(15)" :class="{selected: lineSize == 15}">
-					<div class="circle s15" />
+				<div class="history-btns">
+					<div class="btn" @click="undo">
+						<icon :data="icons.undoSvg" />
+					</div>
+					<div class="btn" @click="redo">
+						<icon :data="icons.redoSvg" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -183,6 +185,19 @@ export default {
 	align-items: center;
 }
 
+.canvas-wrap {
+	display: grid;
+	grid-template-columns: auto 90px;
+	gap: 20px;
+	margin-right: -90px;
+
+	@media only screen and (max-width: 900px) {
+		gap: 0;
+		grid-template-columns: auto;
+		margin-right: 0;
+	}
+}
+
 .board {
 	cursor: var(--board-cursor) 5 5, crosshair;
 	height: 90vw;
@@ -195,14 +210,16 @@ export default {
 .tools {
 	display: grid;
 	gap: 10px;
-	grid-template-columns: 1fr 1fr 1fr;
 	justify-items: center;
-	margin-top: 30px;
+	align-items: center;
 	padding: 20px;
 
 	@media only screen and (max-width: 900px) {
-		padding: 14px;
 		gap: 5px;
+		grid-template-columns: 1fr 1fr 1fr;
+		margin-top: 20px;
+		padding: 14px;
+		grid-template-areas: "toolBtns historyBtns sizeBtns";
 	}
 
 	@media only screen and (max-width: 450px) {
@@ -210,15 +227,15 @@ export default {
 		grid-template-columns: 1fr 1fr;
 		justify-items: flex-end;
 	}
-
-	@media only screen and (max-height: 1080px) {
-		margin-top: 20px;
-	}
 }
 
 .tools > div {
 	display: flex;
 	gap: 10px;
+
+	@media only screen and (min-width: 900px) {
+		flex-direction: column;
+	}
 }
 
 .tools .btn {
@@ -264,6 +281,7 @@ export default {
 	grid-template-columns: repeat(11, 1fr);
 	gap: 8px 6px;
 	margin-bottom: 10px;
+	margin-top: 20px;
 
 	@media only screen and (max-width: 500px) {
 		grid-template-columns: repeat(8, 1fr);
@@ -285,12 +303,37 @@ export default {
 	}
 }
 
+@media only screen and (max-width: 900px) {
+	.tool-btns {
+		grid-area: toolBtns;
+	}
+
+	.size-btns {
+		grid-area: sizeBtns;
+		flex-direction: row-reverse;
+	}
+
+	.history-btns {
+		grid-area: historyBtns;
+	}
+}
+
 .btn.done {
 	margin-top: 40px;
 	width: 220px;
 
 	@media only screen and (max-height: 1080px) {
-		margin-top: 35px;
+		margin-top: 20px;
+	}
+}
+
+@media only screen and (max-height: 1080px) {
+	h1 {
+		padding-bottom: 30px;
+
+		> div {
+			padding-bottom: 10px;
+		}
 	}
 }
 
