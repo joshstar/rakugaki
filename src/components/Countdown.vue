@@ -33,9 +33,17 @@ export default {
 				return this.$emit("trigger")
 			}
 			this.seconds--
+			if (this.seconds === 10) {
+				this.playCountdown()
+			}
 		},
 		stop() {
 			clearInterval(this.interval)
+		},
+		playCountdown() {
+			const audio = new Audio("/audio/countdown.mp3");
+			audio.volume = 0.2;
+			audio.play();
 		}
 	},
 	created() {
