@@ -314,7 +314,7 @@ export default {
 	}
 }
 
-@media only screen and (max-width: 1200px) and (min-width: 500px) {
+@media only screen and (max-width: 1200px) and (min-width: 501px) {
 	.tool-btns {
 		grid-area: toolBtns;
 	}
