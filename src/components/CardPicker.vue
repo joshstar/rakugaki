@@ -61,6 +61,15 @@ export default {
 	@media only screen and (max-width: 900px) {
 		gap: 40px;
 	}
+
+	@media only screen and (max-width: 500px) {
+		grid-template-columns: 1fr;
+		justify-items: center;
+
+		&.more-cards {
+			grid-template-columns: 1fr;
+		}
+	}
 }
 
 .card {

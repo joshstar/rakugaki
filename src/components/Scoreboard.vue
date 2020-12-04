@@ -80,13 +80,14 @@ export default {
 <style lang="scss" scoped>
 
 .scoreboard {
-	position: absolute;
-	left: 40px;
-	top: 140px;
 	display: grid;
 	gap: 26px;
+	left: 40px;
 	max-width: 250px;
 	overflow: visible;
+	pointer-events: none;
+	position: absolute;
+	top: 140px;
 
 	@media only screen and (max-width: 900px) {
 		position: static;

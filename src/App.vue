@@ -166,7 +166,7 @@ body {
 	font-weight: 700;
 	opacity: 0.4;
 	padding: 10px 12px;
-	position: absolute;
+	position: fixed;
 	right: 10px;
 	text-align: center;
 	transition: opacity 0.2s ease;
