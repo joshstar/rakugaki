@@ -45,7 +45,7 @@ export default {
 	},
 	computed: {
 		cards() {
-			return getPlayer(state.presenter).history;
+			return getPlayer(state.presenter).history
 		},
 		presenting() {
 			return state.self === state.presenter

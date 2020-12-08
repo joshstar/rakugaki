@@ -14,6 +14,7 @@ export default {
 		return {
 			seconds: 0,
 			interval: null,
+			audio: null,
 			icons: {
 				clockSvg
 			}
@@ -41,9 +42,16 @@ export default {
 			clearInterval(this.interval)
 		},
 		playCountdown() {
-			const audio = new Audio("/audio/countdown.mp3");
-			audio.volume = 0.2;
-			audio.play();
+			try {
+				this.audio = new Audio("/audio/countdown.mp3")
+				this.audio.volume = 0.1
+				this.audio.play()
+			} catch (e) {e}
+		},
+		stopCountdown() {
+			try {
+				this.audio.pause()
+			} catch (e) {e}
 		}
 	},
 	created() {
@@ -54,6 +62,7 @@ export default {
 	beforeUnmount() {
 		this.seconds = 0
 		this.stop()
+		this.stopCountdown()
 	}
 }
 </script>
