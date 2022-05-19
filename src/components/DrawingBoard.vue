@@ -198,6 +198,7 @@ export default {
 }
 
 .board {
+	color-scheme: only light;
 	cursor: var(--board-cursor) 5 5, crosshair;
 	height: 90vw;
 	max-height: 600px;

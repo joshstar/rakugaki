@@ -180,6 +180,7 @@ h1 {
 	max-width: 250px;
 	max-height: 250px;
 	padding: 0;
+	color-scheme: only light;
 
 	img {
 		border-radius: 8px;

@@ -112,6 +112,10 @@ body {
 	}
 }
 
+img:not(.logo) {
+	color-scheme: only light;
+}
+
 .logo {
 	max-width: 300px;
 	margin-top: 40px;
@@ -238,6 +242,10 @@ img {
 	&:hover {
 		box-shadow: 0px 2px 12px rgba(16, 94, 210, 0.45);
 	}
+}
+
+.capitalize {
+	text-transform: capitalize;
 }
 
 </style>

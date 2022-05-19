@@ -57,6 +57,7 @@ export default {
 	max-width: 600px;
 	padding: 0;
 	width: 90vw;
+	color-scheme: only light;
 }
 
 .input-wrap {

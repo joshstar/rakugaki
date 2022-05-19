@@ -213,6 +213,7 @@ h1 {
 	max-width: 600px;
 	padding: 0;
 	width: 90vw;
+	color-scheme: only light;
 }
 
 .card {
