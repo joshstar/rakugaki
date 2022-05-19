@@ -69,8 +69,10 @@ export default {
 	}
 
 	@media only screen and (max-width: 500px) {
-		grid-template-columns: 1fr;
-		justify-items: center;
+		grid-template-columns: repeat(auto-fill, 140px);
+		justify-content: center;
+		gap: 25px;
+		width: calc(100vw - 30px);
 
 		&.more-cards {
 			grid-template-columns: 1fr;
@@ -97,6 +99,12 @@ export default {
 
 	&:hover {
 		transform: translateY(-2px) scale(1.05);
+	}
+
+	@media only screen and (max-width: 500px) {
+		width: 140px;
+		height: 190px;
+		font-size: 1.8rem;
 	}
 }
 
