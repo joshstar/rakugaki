@@ -1,5 +1,5 @@
 import { sampleSize, random } from "lodash"
-import { state, pushHistory, getPlayer } from "./state"
+import { state, pushHistory, getPlayer, hasExtraTurn } from "./state"
 import { init } from "./event"
 import router from "@/routes"
 
@@ -63,14 +63,25 @@ function getNextPlayer(turn) {
 	const playOrder = state.options.playOrder
 	const selfPosition = playOrder.findIndex(id => id === state.self)
 	let nextTurnPlayer = turn + selfPosition
+
+	// If we're doing an extra turn for odd players the player won't exist
+	// in the play order so we'll manually set it to another player
+	if (turn >= playOrder.length && playOrder[nextTurnPlayer] === undefined) {
+		nextTurnPlayer = selfPosition + 1
+	}
+
 	if (nextTurnPlayer >= playOrder.length) {
 		nextTurnPlayer = nextTurnPlayer - playOrder.length
 	}
+
 	return getPlayer(playOrder[nextTurnPlayer])
 }
 
 export function nextTurn() {
-	if (state.turn === state.players.length) {
+	if (state.turn === state.players.length && hasExtraTurn()) {
+		console.log("Extra turn for even players");
+	}
+	else if (state.turn >= state.players.length) {
 		state.stage = "watch"
 		return router.replace("/watch")
 	}

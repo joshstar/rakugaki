@@ -1,8 +1,10 @@
 import { last } from "lodash"
-import { state, getPlayer, pushWatchPage, plusPoints, nextRound } from "./state"
+import { state, getPlayer, pushWatchPage, plusPoints, nextRound, hasExtraTurn } from "./state"
 
 export function allPlayersFinished() {
-	const totalTurns = state.players.length
+	const totalTurns = hasExtraTurn()
+		? state.players.length + 1
+		: state.players.length
 	const hasPlayedLastTurn = ({turn}) => turn === totalTurns
 	return !state.players.every(({ history }) => history.find(hasPlayedLastTurn))
 }

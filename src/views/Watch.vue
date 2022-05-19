@@ -41,7 +41,7 @@
 				You are presenting!
 				<div>
 					The other players can what you are looking at. <br>
-					Walk them through the jouney your original card went on!
+					Walk them through the journey your original card went on!
 				</div>
 			</h1>
 			<h1 class="watching" v-else-if="presenter">

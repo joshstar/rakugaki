@@ -1,6 +1,7 @@
 import { shuffle, isEqual } from "lodash"
 import { reactive } from 'vue'
 import router from "@/routes"
+import { isEven } from "@/util"
 import { clearEventLog, disconnect } from "./pusher"
 import * as event from "./event"
 
@@ -202,6 +203,10 @@ export function getPlayer(id) {
 export function makePlayOrder(players) {
 	const playerIds = players.map(({ id }) => id)
 	return shuffle(playerIds)
+}
+
+export function hasExtraTurn() {
+	return isEven(state.players.length) && state.players.length > 5
 }
 
 export function resetState() {
