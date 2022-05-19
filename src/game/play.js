@@ -35,6 +35,14 @@ export async function getCards() {
 	return cards
 }
 
+export function submitPrompts(prompts) {
+	pushHistory({
+		type: "prompts",
+		data: prompts,
+		initiator: state.self
+	})
+}
+
 export function pickCard(card) {
 	pushHistory({
 		type: "card",
@@ -62,7 +70,7 @@ export function submitDescription(text, player) {
 function getNextPlayer(turn) {
 	const playOrder = state.options.playOrder
 	const selfPosition = playOrder.findIndex(id => id === state.self)
-	let nextTurnPlayer = turn + selfPosition
+	let nextTurnPlayer = (turn === -1 ? 1 : turn) + selfPosition
 
 	// If we're doing an extra turn for odd players the player won't exist
 	// in the play order so we'll manually set it to another player
@@ -92,11 +100,21 @@ export function nextTurn() {
 		throw "History not ready"
 	}
 
+	let type = nextTurnHistory.type === "draw" ? "describe" : "draw"
+	if (nextTurnHistory.type === "prompts" && !promptsTurnComplete()) {
+		type = "card"
+	}
+
 	state.turn = state.turn + 1
 	return {
 		...nextTurnHistory,
 		player,
 		creator: getPlayer(nextTurnHistory.creator),
-		type: nextTurnHistory.type === "draw" ? "describe" : "draw"
+		type
 	}
+}
+
+function promptsTurnComplete() {
+	const player = getNextPlayer(state.turn)
+	return !!player.history.find(history => history && history.turn === state.turn && history.type === "card")
 }

@@ -12,32 +12,37 @@
 				</div>
 			</div>
 
-			<div class="options" v-if="self.host">
+			<div class="options" v-if="self.host" :class="{'prompt-mode': options.mode === 'prompt'}">
+				<div class="btn option capitalize tooltip" @click="toggleMode" :class="[options.mode]">
+					{{ options.mode }} Mode
+				</div>
 				<div class="btn option" @click="upRounds">
 					{{ options.rounds }} Round{{ options.rounds > 1 ? "s" : ""}}
 				</div>
 				<div class="btn option" @click="upTimeLimit">
 					{{ options.timeLimit ? `${ options.timeLimit } min` : "No time" }} limit
 				</div>
-				<div class="btn option" @click="toggleColors" :class="{colors: options.colors}">
-					{{ options.colors ? "Colors" : "Just Black"}}
-				</div>
-				<div class="btn option" @click="upCardAmount">
+				<div class="btn option" @click="upCardAmount" v-if="options.mode === 'deck'">
 					{{ options.cardAmount }} Phrase Card{{ options.cardAmount > 1 ? "s" : ""}}
 				</div>
-				<div class="dropdown-wrap">
-					<div class="btn option dropdown-toggle" @click="toggleDeckDropdown">
-						{{ options.decks.length }} Deck{{ options.decks.length !== 1 ? "s" : ""}}
-					</div>
-					<div class="btn dropdown" v-if="editingDecks">
-						<div class="item" v-for="deck in decks" :key="deck" @click="toggleDeck(deck)" :class="{active: isDeckActive(deck)}">
-							{{ deck }}
+				<div class="btn option" @click="upCardAmount" v-else-if="options.mode === 'prompt'">
+					{{ options.cardAmount }} Prompt Card{{ options.cardAmount > 1 ? "s" : ""}}
+				</div>
+				<template v-if="options.mode === 'deck'">
+					<div class="dropdown-wrap">
+						<div class="btn option dropdown-toggle" @click="toggleDeckDropdown">
+							{{ options.decks.length }} Deck{{ options.decks.length !== 1 ? "s" : ""}}
+						</div>
+						<div class="btn dropdown" v-if="editingDecks">
+							<div class="item" v-for="deck in decks" :key="deck" @click="toggleDeck(deck)" :class="{active: isDeckActive(deck)}">
+								{{ deck }}
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="btn option" @click="toggleCustomCardModal">
-					{{ options.customCards.length ? options.customCards.length : "" }} Custom Card{{ options.customCards.length !== 1 ? "s" : ""}}
-				</div>
+					<div class="btn option" @click="toggleCustomCardModal">
+						{{ options.customCards.length ? options.customCards.length : "" }} Custom Card{{ options.customCards.length !== 1 ? "s" : ""}}
+					</div>
+				</template>
 			</div>
 
 			<div class="btn wait-btn" v-if="starting">
@@ -107,10 +112,11 @@ export default {
 			customCardModalActive: false,
 			customCardsString: "",
 			options: {
+				mode: "deck",
 				timeLimit: 0,
 				rounds: 1,
-				colors: false,
-				cardAmount: 4,
+				colors: true,
+				cardAmount: 2,
 				decks: ["standard"],
 				customCards: [],
 			},
@@ -163,6 +169,10 @@ export default {
 		copyUrl() {
 			this.$refs.invite.select()
 			document.execCommand("copy")
+		},
+		toggleMode() {
+			this.options.mode = this.options.mode === "deck" 
+				? "prompt" : "deck"
 		},
 		upRounds() {
 			this.options.rounds = this.options.rounds + 1
@@ -350,6 +360,10 @@ export default {
 	gap: 24px;
 	margin-bottom: 40px;
 
+	&.prompt-mode {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
 	@media only screen and (max-width: 500px) {
 		grid-template-columns: repeat(2, 1fr);
 	}
@@ -360,6 +374,43 @@ export default {
 	font-size: 1.4rem;
 	padding: 16px;
 	transition: transform 0.2s, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.option.tooltip {
+	position: relative;
+
+	&:before {
+		background: rgba(7, 7, 34, 0.7);
+		border-radius: 4px;
+		color: #fff;
+		display: block;
+		font-family: 'Poppins', sans-serif;
+		font-size: 1.2rem;
+		font-weight: 600;
+		left: -18px;
+		line-height: 1.5rem;
+		opacity: 0;
+		padding: 10px;
+		pointer-events: none;
+		position: absolute;
+		text-transform: initial;
+		top: -55px;
+		transition: 0.3s ease;
+		width: calc(100% + 36px);
+	}
+
+	&:hover:before {
+		opacity: 1;
+		top: -58px;
+	}
+
+	&.deck:before {
+		content: "Players pick a phrase card from pre-made decks";
+	}
+
+	&.prompt:before {
+		content: "Players write their own prompts for other players to pick from";
+	}
 }
 
 .option.colors {

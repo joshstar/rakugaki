@@ -48,9 +48,14 @@ export function players(callback) {
 }
 
 export function getSavedOptions() {
-	const options = localStorage.getItem("options")
+	const storageOptions = localStorage.getItem("storageOptions")
+	if (!storageOptions) return
+	const options = JSON.parse(options)
 	if (!options) return
-	return JSON.parse(options)
+	if (!options.mode) {
+		options.mode = "deck"
+	}
+	return options
 }
 
 function saveOptions(options) {

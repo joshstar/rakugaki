@@ -14,24 +14,26 @@
 
 		<div class="rounds">
 			<div class="cards" v-for="(cards, key) in rounds" :key="key">
-				<div v-for="card in cards" :key="card.id">
-					<div class="board" v-if="card.type === 'draw'">
-						<div class="board box">
-							<img :src="card.data">
+				<template v-for="card in cards">
+					<div v-if="card && card.type !== 'prompts'" :key="card.id" >
+						<div class="board" v-if="card.type === 'draw'">
+							<div class="board box">
+								<img :src="card.data">
+							</div>
+						</div>
+						<div class="describe box" v-else-if="card.type === 'describe'">
+							{{ card.data }}
+						</div>
+						<div class="card" v-else-if="card.type === 'card'">
+							{{ card.data }}
+						</div>
+		
+						<div class="player" v-if="card.creator">
+							<img class="avatar" :src="getCreator(card).avatar">
+							{{ getCreator(card).name }}
 						</div>
 					</div>
-					<div class="describe box" v-else-if="card.type === 'describe'">
-						{{ card.data }}
-					</div>
-					<div class="card" v-else-if="card.type === 'card'">
-						{{ card.data }}
-					</div>
-	
-					<div class="player" v-if="card.creator">
-						<img class="avatar" :src="getCreator(card).avatar">
-						{{ getCreator(card).name }}
-					</div>
-				</div>
+				</template>
 			</div>
 		</div>
 	</div>

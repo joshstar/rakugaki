@@ -14,8 +14,10 @@
 
 <script>
 import * as play from "@/game/play"
+import { state } from "@/game/state"
 
 export default {
+	props: ["prompts"],
 	data() {
 		return {
 			cards: []
@@ -34,7 +36,11 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchCards()
+		if (state.options.mode === "prompt" && this.prompts) {
+			this.cards = this.prompts
+		} else {
+			this.fetchCards()
+		}
 	}
 }
 </script>

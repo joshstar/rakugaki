@@ -45,7 +45,8 @@ export default {
 	},
 	computed: {
 		cards() {
-			return getPlayer(state.presenter).history
+			const cards = getPlayer(state.presenter).history
+			return cards.filter(card => card.type !== "prompts")
 		},
 		presenting() {
 			return state.self === state.presenter

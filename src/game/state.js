@@ -18,12 +18,13 @@ export const state = reactive({
 	players: [],
 	roundHistory: [],
 	options: {
+		mode: "deck",
 		rounds: 1,
 		playOrder: [],
 		timeLimit: null,
-		colors: false,
+		colors: true,
 		decks: ["standard"],
-		cardAmount: 4,
+		cardAmount: 2,
 		customCards: [],
 	},
 })
@@ -39,6 +40,7 @@ export function setPlayers(self, players) {
 
 export function setOptions(options = {}) {
 	state.options = options
+	state.turn = options.mode === "prompt" ? -1 : 0
 }
 
 export function nextRound(push = false) {
@@ -225,12 +227,13 @@ export function resetState() {
 	state.players = []
 	state.roundHistory = []
 	state.options = {
+		mode: "deck",
 		rounds: 1,
 		playOrder: [],
 		timeLimit: null,
-		colors: false,
+		colors: true,
 		decks: ["standard"],
-		cardAmount: 4,
+		cardAmount: 2,
 		customCards: [],
 	}
 }

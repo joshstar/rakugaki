@@ -11,7 +11,8 @@
 				<img class="avatar" :src="turn.creator.avatar">
 				{{ turn.creator.name }}
 			</div>
-			<card-picker v-if="turn.type === 'card'" @picked="pickCard" />
+			<prompt-writer v-if="turn.type === 'prompt'" @done="savePrompts" />
+			<card-picker v-else-if="turn.type === 'card'" :prompts="turn.data" @picked="pickCard" />
 			<drawing-board v-else-if="turn.type === 'draw'" :description="turn.data" @done="saveDrawing" />
 			<description v-else-if="turn.type === 'describe'" :drawing="turn.data" @done="saveDescription" />
 		</div>
@@ -23,6 +24,7 @@
 import { watch } from "vue"
 import { state, startWaitingTimeout, cancelWaitingTimeout } from "@/game/state"
 import * as play from "@/game/play"
+import PromptWriter from "@/components/PromptWriter"
 import CardPicker from "@/components/CardPicker"
 import DrawingBoard from "@/components/DrawingBoard"
 import Description from "@/components/Description"
@@ -30,6 +32,7 @@ import Scoreboard from "@/components/Scoreboard"
 
 export default {
 	components: {
+		PromptWriter,
 		CardPicker,
 		DrawingBoard,
 		Description,
@@ -64,6 +67,10 @@ export default {
 				startWaitingTimeout()
 			}
 		},
+		savePrompts(prompts) {
+			play.submitPrompts(prompts)
+			this.nextTurn()
+		},
 		pickCard(card) {
 			play.pickCard(card)
 			this.nextTurn()
@@ -80,6 +87,11 @@ export default {
 			if (this.waiting) {
 				this.nextTurn()
 			}
+		}
+	},
+	beforeMount() {
+		if (state.options.mode === "prompt") {
+			this.turn.type = "prompt"
 		}
 	},
 	mounted() {
