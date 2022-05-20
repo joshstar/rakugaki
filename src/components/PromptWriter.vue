@@ -5,7 +5,7 @@
 			<br><span>({{prompts.length + 1}}/{{promptAmountNeeded}})</span>
 		</h1>
 		<div class="wrap">
-			<textarea class="card pink" v-model="prompt" ref="input"></textarea>
+			<textarea class="card pink" v-model="prompt" ref="input" maxlength="75"></textarea>
 		</div>
 
 		<div class="wrap">
