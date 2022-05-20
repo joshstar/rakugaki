@@ -7,6 +7,10 @@
 	<div class="connection-status" v-if="resyncing">
 		Resyncing...
 	</div>
+	<div class="connection-status warning" :class="{show: connecting}">
+		If you are experiencing connection issues, DO NOT close or reload the browser window.<br><br>
+		Wait until your connection has stabilized and ask the host to click the bottom right "resync" button if needed.
+	</div>
 	<div class="resync-btn" v-if="isHost" @click="resync">
 		Resync
 	</div>
@@ -158,6 +162,28 @@ img:not(.logo) {
 	text-align: center;
 	top: 12px;
 	z-index: 90;
+}
+
+.connection-status.warning {
+	bottom: 50px;
+	max-width: 500px;
+	opacity: 0;
+	pointer-events: none;
+	position: fixed;
+	text-align: left;
+	top: initial;
+
+	&.show {
+		animation-name: delay-fade;
+		animation-duration: 5s;
+		opacity: 1;
+	}
+}
+
+@keyframes delay-fade {
+	0% {opacity: 0;}
+	90% {opacity: 0;}
+	100% {opacity: 1;}
 }
 
 .resync-btn {
