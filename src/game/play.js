@@ -87,7 +87,7 @@ function getNextPlayer(turn) {
 
 export function nextTurn() {
 	if (state.turn === state.players.length && hasExtraTurn()) {
-		console.log("Extra turn for even players");
+		console.log("Extra turn for even players")
 	}
 	else if (state.turn >= state.players.length) {
 		state.stage = "watch"

@@ -141,7 +141,7 @@ export default {
 		},
 		startGame() {
 			if (!state.isConnected) {
-				return alert("Connot start game while connecting, please wait...")
+				return alert("Cannot start game while connecting, please wait...")
 			}
 
 			if (!this.options.decks.length && !this.options.customCards.length) {

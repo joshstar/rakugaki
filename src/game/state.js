@@ -57,7 +57,7 @@ export function nextRound(push = false) {
 	makeRoundHistory()
 	state.players.forEach(player => player.history = [])
 	state.round++
-	state.turn = 0
+	state.turn = state.options.mode === "prompt" ? -1 : 0
 	state.watchPage = 0
 	state.presenter = null
 	state.stage = "play"
