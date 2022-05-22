@@ -54,7 +54,7 @@
 
 <script>
 import { watch as vueWatch } from "vue"
-import { state, getPlayer, startWaitingTimeout, cancelWaitingTimeout } from "@/game/state"
+import { state, getPlayer, startWaitingTimeout, cancelWaitingTimeout, hasExtraTurn } from "@/game/state"
 import * as watch from "@/game/watch"
 import Scoreboard from "@/components/Scoreboard"
 import Vote from "@/components/Vote"
@@ -88,7 +88,7 @@ export default {
 		},
 		page() {
 			if (!state.presenter) return {}
-			if (state.watchPage === "voting") return { type: 'voting' }
+			if (state.watchPage === "voting") return { type: "voting" }
 			return watch.getPage(state.presenter, state.watchPage) || {}
 		},
 		creatorVerb() {
@@ -100,7 +100,7 @@ export default {
 			return verbs[this.page.type]
 		},
 		lastPage() {
-			return state.players.length
+			return hasExtraTurn() ? state.players.length + 1 : state.players.length 
 		},
 	},
 	methods: {

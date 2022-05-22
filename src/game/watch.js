@@ -24,7 +24,8 @@ export function getPage(playerId, page) {
 
 export function nextPage() {
 	let page = state.watchPage + 1
-	if (page > state.players.length) {
+	const playerCount = hasExtraTurn() ? state.players.length + 1 : state.players.length 
+	if (page > playerCount) {
 		page = "voting"
 	}
 	pushWatchPage({

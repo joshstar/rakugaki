@@ -175,7 +175,7 @@ img:not(.logo) {
 
 	&.show {
 		animation-name: delay-fade;
-		animation-duration: 5s;
+		animation-duration: 3s;
 		opacity: 1;
 	}
 }
